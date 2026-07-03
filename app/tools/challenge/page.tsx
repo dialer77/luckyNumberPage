@@ -204,6 +204,12 @@ export default function ChallengePage() {
           아래 당첨번호를 목표로 무작위 번호를 뽑습니다. 정해진 횟수만큼
           돌리거나, 1등이 나올 때까지 도전해 보세요.
         </p>
+        <Link
+          href="/ranking"
+          className="mt-2 inline-block text-sm font-medium text-indigo-600 hover:underline"
+        >
+          🏆 오늘의 랭킹에 참가해 다른 사람과 겨루기 →
+        </Link>
       </div>
 
       {/* 목표 번호 */}

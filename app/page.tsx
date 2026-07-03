@@ -71,6 +71,12 @@ export default function HomePage() {
           title="1등 도전 시뮬레이터"
           desc="몇 번 만에 1등이 나올까?"
         />
+        <FeatureCard
+          href="/ranking"
+          emoji="🏆"
+          title="오늘의 랭킹"
+          desc="매일 순이익으로 겨루기"
+        />
       </section>
     </div>
   );

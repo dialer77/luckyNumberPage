@@ -29,6 +29,7 @@ const NAV = [
   { href: "/stats", label: "번호 통계" },
   { href: "/tools/generator", label: "번호 생성기" },
   { href: "/tools/challenge", label: "1등 도전" },
+  { href: "/ranking", label: "오늘의 랭킹" },
 ];
 
 export default function RootLayout({
