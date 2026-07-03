@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+/* 사이트 전역 스타일. 색상은 대부분 Tailwind 클래스로 처리하므로
+   여기서는 폰트/기본값만 최소로 둡니다. */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
