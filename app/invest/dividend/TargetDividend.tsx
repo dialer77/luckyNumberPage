@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { formatKRW } from "@/lib/lotto-data";
+import ShareButton from "@/app/components/ShareButton";
 import {
   DIVIDEND_ETFS,
   requiredPrincipal,
@@ -77,6 +78,17 @@ export default function TargetDividend() {
           <div className="text-xs text-slate-500">달성까지 (배당 재투자)</div>
           <div className="mt-1 text-lg font-bold text-slate-800">{period}</div>
         </div>
+      </div>
+
+      <div className="mt-4">
+        <ShareButton
+          payload={{
+            e: "🎯",
+            t: "목표 배당 역산",
+            v: `필요 원금 ${formatKRW(required)}`,
+            s: `월 ${formatKRW(target)} 배당 · 달성까지 ${period}`,
+          }}
+        />
       </div>
 
       <p className="mt-3 text-xs text-slate-400">

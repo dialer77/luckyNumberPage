@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { calcTax, afterTax, formatKRW } from "@/lib/lotto-data";
+import ShareButton from "@/app/components/ShareButton";
 import { Card, Stat } from "./ui";
 
 // 당첨금 실수령액 계산기
@@ -28,6 +29,17 @@ export default function PrizeCalculator() {
         <Stat label="세금" value={`−${formatKRW(tax)}`} accent="loss" />
         <Stat label="실수령(세후)" value={formatKRW(net)} accent="gain" />
       </div>
+      <div className="mt-4">
+        <ShareButton
+          payload={{
+            e: "🎯",
+            t: "당첨금 실수령",
+            v: formatKRW(net),
+            s: `세전 ${formatKRW(amount)} · 세금 ${formatKRW(tax)}`,
+          }}
+        />
+      </div>
+
       <p className="mt-3 text-xs text-slate-400">
         * 복권 기준: 3억 이하 22%, 3억 초과분 33% (참고용 근사치).
       </p>

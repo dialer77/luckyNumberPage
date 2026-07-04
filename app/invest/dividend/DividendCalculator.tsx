@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { formatKRW } from "@/lib/lotto-data";
+import ShareButton from "@/app/components/ShareButton";
 import {
   DIVIDEND_ETFS,
   FREQ_LABEL,
@@ -95,6 +96,16 @@ export default function DividendCalculator() {
           <b>{formatKRW(Math.round(result.lastYearDividend / 12))}</b>씩 배당이
           들어오는 셈이에요.
         </p>
+        <div className="mt-4">
+          <ShareButton
+            payload={{
+              e: "💰",
+              t: "고배당 ETF 배당",
+              v: formatKRW(result.finalValue),
+              s: `${years}년 뒤 · 연 배당 ${formatKRW(result.lastYearDividend)}`,
+            }}
+          />
+        </div>
       </section>
 
       <p className="text-xs text-slate-400">

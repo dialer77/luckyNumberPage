@@ -5,6 +5,7 @@
 
 import { useState } from "react";
 import { formatKRW } from "@/lib/lotto-data";
+import ShareButton from "@/app/components/ShareButton";
 import { Card, NumberInput, Stat } from "./ui";
 
 export default function SalaryCalculator() {
@@ -41,6 +42,17 @@ export default function SalaryCalculator() {
         <Stat label="이직 누적" value={formatKRW(sumNext)} accent="gain" />
         <Stat label="누적 차이" value={`+${formatKRW(diff)}`} accent="gain" />
       </div>
+      <div className="mt-4">
+        <ShareButton
+          payload={{
+            e: "💼",
+            t: "이직 연봉 계산",
+            v: `+${formatKRW(diff)}`,
+            s: `${years}년 누적 소득 차이`,
+          }}
+        />
+      </div>
+
       <p className="mt-3 text-xs text-slate-400">
         * 양쪽 모두 매년 같은 인상률로 오른다고 가정한 단순 계산 (세금 미반영).
       </p>

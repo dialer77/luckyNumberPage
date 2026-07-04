@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { formatKRW } from "@/lib/lotto-data";
+import ShareButton from "@/app/components/ShareButton";
 import { Card, NumberInput, Stat } from "./ui";
 
 // 복리 계산기
@@ -27,6 +28,17 @@ export default function CompoundCalculator() {
         <Stat label="이자" value={`+${formatKRW(interest)}`} accent="gain" />
         <Stat label="최종금액" value={formatKRW(future)} accent="gain" />
       </div>
+      <div className="mt-4">
+        <ShareButton
+          payload={{
+            e: "📈",
+            t: "복리 계산",
+            v: formatKRW(future),
+            s: `${years}년 · 이자 ${formatKRW(interest)}`,
+          }}
+        />
+      </div>
+
       <p className="mt-3 text-xs text-slate-400">
         * 연 1회 복리 기준 단순 계산 (세금·수수료 미반영).
       </p>
