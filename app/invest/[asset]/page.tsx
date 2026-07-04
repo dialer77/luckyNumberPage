@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import AssetSimulator from "../AssetSimulator";
 import { ASSETS, getAsset } from "@/lib/invest-data";
-import { getRealCoinPrices, isRealCoin } from "@/lib/coin-prices";
+import { getRealPrices } from "@/lib/real-prices";
 
 // 자산별 페이지: /invest/bitcoin, /invest/samsung ...
 // 코인은 CoinGecko 실데이터를 서버에서 주입 → 1시간마다 현재가 갱신(ISR).
@@ -33,14 +33,9 @@ export default async function AssetPage({
   const asset = getAsset(key);
   if (!asset) notFound();
 
-  // 코인이면 실데이터 가격맵으로 교체 (실패 시 예시값 폴백은 내부에서 처리)
-  let resolved = asset;
-  let live = false;
-  if (isRealCoin(asset.key)) {
-    const r = await getRealCoinPrices(asset.key, asset);
-    resolved = { ...asset, prices: r.prices };
-    live = r.live;
-  }
+  // 실데이터 소스(코인·미국주식·금)가 있으면 교체, 실패 시 예시값 폴백
+  const { prices, live } = await getRealPrices(asset);
+  const resolved = { ...asset, prices };
 
   return (
     <div className="space-y-6">
