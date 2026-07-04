@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Script from "next/script";
 import "./globals.css";
 import { SITE } from "@/lib/brand";
 
@@ -42,16 +41,14 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko" className="h-full">
+      {/* Google AdSense 로더 — React 19가 async 스크립트를 <head>로 끌어올려
+          서버 렌더링 HTML에 그대로 찍힙니다(애드센스 심사 크롤러가 인식). */}
+      <script
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+        crossOrigin="anonymous"
+      />
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-800">
-        {/* Google AdSense 로더 (심사·광고 게재용) */}
-        <Script
-          id="adsbygoogle-init"
-          async
-          strategy="afterInteractive"
-          crossOrigin="anonymous"
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-        />
-
         {/* ── 공통 헤더 ── */}
         <header className="border-b border-slate-200 bg-white">
           <div className="mx-auto max-w-3xl px-4 py-3 flex items-center justify-between gap-4">
