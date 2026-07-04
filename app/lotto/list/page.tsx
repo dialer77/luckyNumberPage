@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import NumberBall from "../../components/NumberBall";
-import { getAllDraws } from "@/lib/lotto-data";
+import { getLiveRecent } from "@/lib/lotto-live";
 
 // 회차별 당첨번호 목록 (행운노트 대문에서 한 단계 들어온 페이지).
 export const metadata: Metadata = {
@@ -10,8 +10,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/lotto/list" },
 };
 
-export default function LottoListPage() {
-  const draws = getAllDraws();
+export const revalidate = 3600;
+
+export default async function LottoListPage() {
+  const draws = await getLiveRecent(30);
 
   return (
     <div className="space-y-6">

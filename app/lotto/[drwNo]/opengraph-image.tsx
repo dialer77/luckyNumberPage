@@ -1,11 +1,6 @@
 import { ImageResponse } from "next/og";
-import {
-  getAllDraws,
-  getDraw,
-  afterTax,
-  formatKRW,
-  whatCanYouBuy,
-} from "@/lib/lotto-data";
+import { getAllDraws, afterTax, formatKRW, whatCanYouBuy } from "@/lib/lotto-data";
+import { getLiveDraw } from "@/lib/lotto-live";
 import { loadKoreanFont } from "@/lib/og";
 
 // ─────────────────────────────────────────────────────────────
@@ -33,11 +28,13 @@ function ballStyle(n: number) {
   return { bg: "#22c55e", color: "#ffffff" };
 }
 
+export const dynamicParams = true;
+
 export default async function Image({
   params,
 }: PageProps<"/lotto/[drwNo]">) {
   const { drwNo } = await params;
-  const draw = getDraw(Number(drwNo));
+  const draw = await getLiveDraw(Number(drwNo));
 
   if (!draw) {
     return new ImageResponse(<div style={{ fontSize: 48 }}>Not found</div>, size);

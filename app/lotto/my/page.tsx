@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import MyNumbers from "./MyNumbers";
-import { getLatestDraw } from "@/lib/lotto-data";
+import { getLiveLatest } from "@/lib/lotto-live";
 
 export const metadata: Metadata = {
   title: "내 번호 당첨확인 — 저장한 로또번호 자동 대조",
@@ -10,8 +10,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/lotto/my" },
 };
 
-export default function MyNumbersPage() {
-  const latest = getLatestDraw();
+export const revalidate = 3600;
+
+export default async function MyNumbersPage() {
+  const latest = await getLiveLatest();
 
   return (
     <div className="space-y-6">

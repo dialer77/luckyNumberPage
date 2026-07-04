@@ -30,7 +30,7 @@ export async function playToday(nicknameRaw: string): Promise<PlayResponse> {
   }
 
   // ── 서버에서 시뮬레이션 실행 (조작 불가) ──
-  const result = simulateChallenge();
+  const result = await simulateChallenge();
 
   // 고유 id (같은 닉네임/점수 충돌 방지)
   const id = crypto.randomUUID().slice(0, 8);

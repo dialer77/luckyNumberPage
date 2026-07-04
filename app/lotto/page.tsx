@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import NumberBall from "../components/NumberBall";
-import { getLatestDraw, formatKRW, afterTax } from "@/lib/lotto-data";
+import { formatKRW, afterTax } from "@/lib/lotto-data";
+import { getLiveLatest } from "@/lib/lotto-live";
 import { LOTTO_FEATURES } from "@/lib/brand";
 
 // 행운노트 서브브랜드 "대문" — 기능들을 카드로 정리해 보여주는 랜딩.
@@ -12,8 +13,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/lotto" },
 };
 
-export default function LottoHomePage() {
-  const latest = getLatestDraw();
+export const revalidate = 3600;
+
+export default async function LottoHomePage() {
+  const latest = await getLiveLatest();
 
   return (
     <div className="space-y-6">

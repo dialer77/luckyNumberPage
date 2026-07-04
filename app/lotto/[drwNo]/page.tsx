@@ -3,13 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import NumberBall from "../../components/NumberBall";
 import WhatCanYouBuy from "../../components/WhatCanYouBuy";
-import {
-  getAllDraws,
-  getDraw,
-  formatKRW,
-  calcTax,
-  afterTax,
-} from "@/lib/lotto-data";
+import { getAllDraws, formatKRW, calcTax, afterTax } from "@/lib/lotto-data";
+import { getLiveDraw } from "@/lib/lotto-live";
 import { SITE } from "@/lib/brand";
 
 // ─────────────────────────────────────────────────────────────
@@ -22,16 +17,19 @@ import { SITE } from "@/lib/brand";
 // Flutter에는 없는, 웹(SSG) 특유의 강점입니다.
 // ─────────────────────────────────────────────────────────────
 
+// 최근 회차(예시 기준)만 미리 생성, 나머지는 요청 시 라이브로 렌더
 export function generateStaticParams() {
   return getAllDraws().map((d) => ({ drwNo: String(d.drwNo) }));
 }
+export const dynamicParams = true;
+export const revalidate = 3600;
 
 // 회차별로 <title>/<description>을 다르게 → 검색 결과 노출 최적화
 export async function generateMetadata({
   params,
 }: PageProps<"/lotto/[drwNo]">): Promise<Metadata> {
   const { drwNo } = await params;
-  const draw = getDraw(Number(drwNo));
+  const draw = await getLiveDraw(Number(drwNo));
   if (!draw) return { title: "회차를 찾을 수 없음" };
 
   return {
@@ -47,7 +45,7 @@ export default async function DrawDetailPage({
   params,
 }: PageProps<"/lotto/[drwNo]">) {
   const { drwNo } = await params;
-  const draw = getDraw(Number(drwNo));
+  const draw = await getLiveDraw(Number(drwNo));
 
   // 없는 회차면 404 페이지로
   if (!draw) notFound();

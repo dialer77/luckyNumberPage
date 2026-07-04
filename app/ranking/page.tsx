@@ -3,7 +3,8 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import PlayBox from "./PlayBox";
 import { rankName } from "@/lib/challenge";
-import { formatKRW, getLatestDraw } from "@/lib/lotto-data";
+import { formatKRW } from "@/lib/lotto-data";
+import { getLiveLatest } from "@/lib/lotto-live";
 import {
   getTodayLeaderboard,
   getHallOfFame,
@@ -23,8 +24,8 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function RankingPage() {
-  const target = getLatestDraw();
-  const [today, hof, c] = await Promise.all([
+  const [target, today, hof, c] = await Promise.all([
+    getLiveLatest(),
     getTodayLeaderboard(),
     getHallOfFame(),
     cookies(),

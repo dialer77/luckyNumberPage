@@ -3,7 +3,8 @@
 // 브라우저는 점수를 만들지 않으므로 위조할 값이 없습니다.
 
 import { redis } from "./redis";
-import { getLatestDraw, drawPrizes } from "./lotto-data";
+import { drawPrizes } from "./lotto-data";
+import { getLiveLatest } from "./lotto-live";
 
 export const TRIES_PER_DAY = 1000; // 하루 챌린지에서 뽑는 횟수(고정)
 
@@ -39,8 +40,8 @@ export function sanitizeNick(raw: string): string {
 }
 
 // ── 서버에서 직접 돌리는 시뮬레이션 (조작 불가 지점) ──
-export function simulateChallenge(tries = TRIES_PER_DAY): SimResult {
-  const draw = getLatestDraw();
+export async function simulateChallenge(tries = TRIES_PER_DAY): Promise<SimResult> {
+  const draw = await getLiveLatest();
   const prizes = drawPrizes(draw);
   const mask = new Uint8Array(46);
   draw.numbers.forEach((n) => (mask[n] = 1));

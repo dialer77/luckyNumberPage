@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
 import NumberBall from "../components/NumberBall";
-import { getNumberFrequency, getAllDraws } from "@/lib/lotto-data";
+import { getLiveRecent, computeFrequency } from "@/lib/lotto-live";
 
 export const metadata: Metadata = {
   title: "번호 출현 통계",
-  description: "역대 회차에서 각 번호가 몇 번 나왔는지 집계한 통계입니다.",
+  description: "최근 회차에서 각 번호가 몇 번 나왔는지 집계한 통계입니다.",
   alternates: { canonical: "/stats" },
 };
 
-export default function StatsPage() {
-  const freq = getNumberFrequency();
-  const totalDraws = getAllDraws().length;
+export const revalidate = 3600;
+
+export default async function StatsPage() {
+  const draws = await getLiveRecent(50);
+  const freq = computeFrequency(draws);
+  const totalDraws = draws.length;
   const maxCount = Math.max(...freq.map((f) => f.count), 1); // 막대 비율 계산용
 
   return (

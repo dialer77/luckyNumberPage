@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import NumberBall from "./components/NumberBall";
-import { getLatestDraw, formatKRW, afterTax } from "@/lib/lotto-data";
+import { formatKRW, afterTax } from "@/lib/lotto-data";
+import { getLiveLatest } from "@/lib/lotto-live";
 import { SITE, SUB_BRANDS } from "@/lib/brand";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-// 우산 허브 홈.
-// 상단: "만약에" 브랜드 소개 → 서브브랜드 3종 진입 카드 → 행운노트 스포트라이트.
+// 우산 허브 홈. 최신 회차를 실데이터로 가져오므로 ISR로 주기 갱신.
+export const revalidate = 3600;
 
-export default function HomePage() {
-  const latest = getLatestDraw();
+export default async function HomePage() {
+  const latest = await getLiveLatest();
 
   return (
     <div className="space-y-12">
