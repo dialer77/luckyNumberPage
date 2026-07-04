@@ -1,107 +1,106 @@
 import Link from "next/link";
 import NumberBall from "./components/NumberBall";
 import { getLatestDraw, formatKRW, afterTax } from "@/lib/lotto-data";
+import { SITE, SUB_BRANDS, LOTTO_FEATURES } from "@/lib/brand";
 
-// 홈(허브) 페이지 — Server Component.
-// 최신 회차를 크게 보여주고, 여기서 다른 엔진(조회/통계/생성기)으로
-// 자연스럽게 이동하도록 카드 배치 = 기획서 §4의 "클릭 도미노" UX.
+// 우산 허브 홈.
+// 상단: "만약에" 브랜드 소개 → 그 아래 서브브랜드별 섹션.
+// 라이브 서브브랜드(행운노트)는 기능을 펼쳐 보여주고,
+// 준비 중 서브브랜드는 예고 카드로만 노출(빈 페이지를 만들지 않음).
 
 export default function HomePage() {
   const latest = getLatestDraw();
+  const live = SUB_BRANDS.filter((b) => b.status === "live");
+  const soon = SUB_BRANDS.filter((b) => b.status === "soon");
 
   return (
-    <div className="space-y-10">
-      {/* ── 히어로: 최신 회차 ── */}
-      <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
-        <p className="text-sm text-slate-500">
-          제 {latest.drwNo}회 · {latest.drwNoDate} 추첨
+    <div className="space-y-12">
+      {/* ── 히어로: 우산 브랜드 ── */}
+      <section className="text-center">
+        <div className="text-4xl">{SITE.emoji}</div>
+        <h1 className="mt-3 text-2xl font-extrabold sm:text-3xl">
+          만약에, 얼마?
+        </h1>
+        <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-500">
+          로또에 당첨되면, 그때 그 주식을 샀으면, 세금을 떼면 —{" "}
+          <b className="text-slate-700">&lsquo;만약에 얼마?&rsquo;</b>를 재미로
+          확인하는 곳이에요.
         </p>
-        <h1 className="mt-1 text-xl font-bold">최신 당첨번호</h1>
-
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          {latest.numbers.map((n) => (
-            <NumberBall key={n} n={n} size="lg" />
-          ))}
-          <span className="mx-1 text-slate-400">+</span>
-          <NumberBall n={latest.bonus} size="lg" />
-        </div>
-
-        <p className="mt-4 text-sm text-slate-600">
-          1등 {latest.firstWinnerCount}명 · 1게임당 세전{" "}
-          <span className="font-semibold">
-            {formatKRW(latest.firstWinAmount)}
-          </span>{" "}
-          → 세후{" "}
-          <span className="font-semibold text-indigo-600">
-            {formatKRW(afterTax(latest.firstWinAmount))}
-          </span>
-        </p>
-
-        <Link
-          href={`/lotto/${latest.drwNo}`}
-          className="mt-4 inline-block rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
-          이 회차 상세 보기 →
-        </Link>
       </section>
 
-      {/* ── 기능 카드들 (엔진 간 이동 유도) ── */}
-      <section className="grid gap-4 sm:grid-cols-2">
-        <FeatureCard
-          href="/lotto"
-          emoji="📜"
-          title="회차별 당첨번호"
-          desc="역대 회차를 한눈에 조회"
-        />
-        <FeatureCard
-          href="/stats"
-          emoji="📊"
-          title="번호 출현 통계"
-          desc="어떤 번호가 자주 나왔나"
-        />
-        <FeatureCard
-          href="/tools/generator"
-          emoji="🎲"
-          title="번호 생성기"
-          desc="무작위 행운 번호 뽑기"
-        />
-        <FeatureCard
-          href="/tools/challenge"
-          emoji="🎯"
-          title="1등 도전 시뮬레이터"
-          desc="몇 번 만에 1등이 나올까?"
-        />
-        <FeatureCard
-          href="/ranking"
-          emoji="🏆"
-          title="오늘의 랭킹"
-          desc="매일 순이익으로 겨루기"
-        />
+      {/* ── 라이브 서브브랜드: 행운노트 ── */}
+      {live.map((brand) => (
+        <section key={brand.key} className="space-y-4">
+          <div className="flex items-baseline gap-2">
+            <h2 className="text-xl font-bold">
+              {brand.emoji} {brand.name}
+            </h2>
+            <span className="text-sm text-slate-400">{brand.tagline}</span>
+          </div>
+
+          {/* 최신 회차 하이라이트 */}
+          <Link
+            href={`/lotto/${latest.drwNo}`}
+            className="block rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 hover:ring-indigo-200"
+          >
+            <div className="text-xs text-slate-400">
+              제 {latest.drwNo}회 · {latest.drwNoDate} 최신 당첨번호
+            </div>
+            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+              {latest.numbers.map((n) => (
+                <NumberBall key={n} n={n} size="md" />
+              ))}
+              <span className="mx-1 text-slate-300">+</span>
+              <NumberBall n={latest.bonus} size="md" />
+            </div>
+            <div className="mt-3 text-sm text-slate-500">
+              세후 실수령{" "}
+              <span className="font-semibold text-indigo-600">
+                {formatKRW(afterTax(latest.firstWinAmount))}
+              </span>
+            </div>
+          </Link>
+
+          {/* 행운노트 기능 카드 */}
+          <div className="grid gap-3 sm:grid-cols-2">
+            {LOTTO_FEATURES.map((f) => (
+              <Link
+                key={f.href}
+                href={f.href}
+                className="flex items-start gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <span className="text-2xl">{f.emoji}</span>
+                <div>
+                  <div className="font-semibold">{f.title}</div>
+                  <div className="mt-0.5 text-sm text-slate-500">{f.desc}</div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ))}
+
+      {/* ── 준비 중 서브브랜드 예고 ── */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-bold text-slate-400">곧 만나요</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {soon.map((brand) => (
+            <div
+              key={brand.key}
+              className="rounded-xl border border-dashed border-slate-200 bg-white/50 p-4"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-2xl grayscale">{brand.emoji}</span>
+                <div className="font-semibold text-slate-500">{brand.name}</div>
+                <span className="ml-auto rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-400">
+                  준비 중
+                </span>
+              </div>
+              <p className="mt-2 text-sm text-slate-400">{brand.tagline}</p>
+            </div>
+          ))}
+        </div>
       </section>
     </div>
-  );
-}
-
-// 작은 재사용 컴포넌트: 기능 카드 하나.
-function FeatureCard({
-  href,
-  emoji,
-  title,
-  desc,
-}: {
-  href: string;
-  emoji: string;
-  title: string;
-  desc: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="block rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:shadow-md"
-    >
-      <div className="text-2xl">{emoji}</div>
-      <h2 className="mt-2 font-semibold">{title}</h2>
-      <p className="mt-1 text-sm text-slate-500">{desc}</p>
-    </Link>
   );
 }
