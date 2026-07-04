@@ -6,28 +6,31 @@
 
 import { PAST_YEARS, CURRENT_YEAR, type Asset } from "./invest-data";
 import { coinPriceFetchers } from "./coin-prices";
-import { stockPriceFetchers } from "./stock-prices";
+import { getStockPrices, isStockSymbol } from "./stock-prices";
 
 export async function getRealPrices(
   asset: Asset
 ): Promise<{ prices: Record<number, number>; live: boolean }> {
-  const fetchers = coinPriceFetchers(asset.key) ?? stockPriceFetchers(asset.key);
-  if (!fetchers) return { prices: asset.prices, live: false };
-
-  const out: Record<number, number> = {};
-  for (const y of PAST_YEARS) {
-    const p = await fetchers.history(y);
-    if (p == null) return { prices: asset.prices, live: false }; // 통화 혼용 방지
-    out[y] = p;
+  // 미국주식·금 (Twelve Data) — 종목당 1콜
+  if (isStockSymbol(asset.key)) {
+    const r = await getStockPrices(asset);
+    if (r) return r;
   }
-  const current = await fetchers.current();
-  if (current == null) return { prices: asset.prices, live: false };
-  out[CURRENT_YEAR] = current;
 
-  return { prices: out, live: true };
-}
+  // 코인 (CoinGecko) — 날짜별 조회, all-or-nothing
+  const fetchers = coinPriceFetchers(asset.key);
+  if (fetchers) {
+    const out: Record<number, number> = {};
+    for (const y of PAST_YEARS) {
+      const p = await fetchers.history(y);
+      if (p == null) return { prices: asset.prices, live: false };
+      out[y] = p;
+    }
+    const current = await fetchers.current();
+    if (current == null) return { prices: asset.prices, live: false };
+    out[CURRENT_YEAR] = current;
+    return { prices: out, live: true };
+  }
 
-// 실데이터 소스가 있는 자산인지 (배지/안내용)
-export function hasRealSource(assetKey: string): boolean {
-  return coinPriceFetchers(assetKey) != null || stockPriceFetchers(assetKey) != null;
+  return { prices: asset.prices, live: false };
 }
