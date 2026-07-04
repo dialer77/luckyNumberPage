@@ -15,6 +15,10 @@ const SYMBOLS: Record<string, string> = {
   micron: "MU",
   asml: "ASML",
   amd: "AMD",
+  googl: "GOOGL",
+  amazon: "AMZN",
+  microsoft: "MSFT",
+  meta: "META",
   gold: "XAU/USD",
 };
 

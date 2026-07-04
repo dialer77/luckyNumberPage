@@ -6,6 +6,8 @@ const BASE = "https://api.coingecko.com/api/v3";
 const COIN_IDS: Record<string, string> = {
   bitcoin: "bitcoin",
   ethereum: "ethereum",
+  ripple: "ripple",
+  dogecoin: "dogecoin",
 };
 
 function headers(): HeadersInit {

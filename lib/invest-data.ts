@@ -38,9 +38,15 @@ export const ASSETS: Asset[] = [
   { key: "micron", name: "마이크론", emoji: "🧠", category: "stock", prices: { 2015: 15, 2018: 40, 2020: 50, 2021: 90, 2023: 70, 2026: 160 } },
   { key: "asml", name: "ASML", emoji: "🔬", category: "stock", prices: { 2015: 90, 2018: 175, 2020: 350, 2021: 700, 2023: 680, 2026: 1100 } },
   { key: "amd", name: "AMD", emoji: "🖥️", category: "stock", prices: { 2015: 2, 2018: 18, 2020: 50, 2021: 150, 2023: 120, 2026: 260 } },
+  { key: "googl", name: "구글", emoji: "🔎", category: "stock", prices: { 2015: 26, 2018: 55, 2020: 87, 2021: 145, 2023: 130, 2026: 210 } },
+  { key: "amazon", name: "아마존", emoji: "📦", category: "stock", prices: { 2015: 15, 2018: 60, 2020: 95, 2021: 165, 2023: 130, 2026: 240 } },
+  { key: "microsoft", name: "마이크로소프트", emoji: "💻", category: "stock", prices: { 2015: 46, 2018: 100, 2020: 220, 2021: 335, 2023: 370, 2026: 520 } },
+  { key: "meta", name: "메타", emoji: "📘", category: "stock", prices: { 2015: 78, 2018: 180, 2020: 270, 2021: 340, 2023: 350, 2026: 720 } },
   // ── 코인 ──
   { key: "bitcoin", name: "비트코인", emoji: "🪙", category: "coin", prices: { 2015: 300, 2018: 7000, 2020: 9000, 2021: 47000, 2023: 30000, 2026: 105000 } },
   { key: "ethereum", name: "이더리움", emoji: "💎", category: "coin", prices: { 2015: 1, 2018: 250, 2020: 200, 2021: 3700, 2023: 1900, 2026: 4200 } },
+  { key: "ripple", name: "리플(XRP)", emoji: "💧", category: "coin", prices: { 2015: 0.006, 2018: 0.4, 2020: 0.2, 2021: 0.6, 2023: 0.5, 2026: 2.5 } },
+  { key: "dogecoin", name: "도지코인", emoji: "🐕", category: "coin", prices: { 2015: 0.0001, 2018: 0.005, 2020: 0.003, 2021: 0.2, 2023: 0.07, 2026: 0.4 } },
   // ── 금 ──
   { key: "gold", name: "금", emoji: "🥇", category: "gold", prices: { 2015: 1100, 2018: 1300, 2020: 1900, 2021: 1800, 2023: 1950, 2026: 2650 } },
 ];
