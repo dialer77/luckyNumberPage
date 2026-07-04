@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
 import { SITE } from "@/lib/brand";
+import Nav from "./components/Nav";
 
 // Google AdSense 게시자 ID
 const ADSENSE_CLIENT = "ca-pub-4718898950361659";
@@ -25,16 +26,6 @@ export const metadata: Metadata = {
   // AdSense 사이트 소유 확인용 메타 태그
   other: { "google-adsense-account": ADSENSE_CLIENT },
 };
-
-// 헤더 내비게이션.
-// 지금은 '행운노트(로또)' 서브브랜드만 라이브라 그 주요 기능들을 노출.
-// 다른 서브브랜드가 라이브되면 섹션 단위로 확장할 예정.
-const NAV = [
-  { href: "/", label: "홈" },
-  { href: "/lotto", label: "🍀 행운노트" },
-  { href: "/invest", label: "📈 그때샀으면" },
-  { href: "/calc", label: "🧮 머니계산기" },
-];
 
 export default function RootLayout({
   children,
@@ -65,8 +56,8 @@ export default function RootLayout({
         }}
       />
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-800">
-        {/* ── 공통 헤더 ── */}
-        <header className="border-b border-slate-200 bg-white">
+        {/* ── 공통 헤더 (상단 고정) ── */}
+        <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur">
           <div className="mx-auto max-w-3xl px-4 py-3 flex items-center justify-between gap-4">
             <Link
               href="/"
@@ -74,17 +65,7 @@ export default function RootLayout({
             >
               {SITE.emoji} {SITE.name}
             </Link>
-            <nav className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-              {NAV.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-slate-600 hover:text-indigo-600"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+            <Nav />
           </div>
         </header>
 
