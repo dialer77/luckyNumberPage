@@ -1,35 +1,34 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
+import { SITE } from "@/lib/brand";
 
 // 사이트 전체 공통 메타데이터 (SEO + 공유 미리보기의 기본값).
 // 개별 페이지에서 title/description을 export 하면 이 값을 덮어씀.
 export const metadata: Metadata = {
-  // 공유 카드/사이트맵의 절대 URL 기준. ⚠️ 배포 시 실제 도메인으로 교체.
-  metadataBase: new URL("https://example.com"),
+  metadataBase: new URL(SITE.url), // 공유 카드/사이트맵의 절대 URL 기준
   title: {
-    default: "행운노트 — 로또 당첨번호 조회·통계",
-    template: "%s | 행운노트", // 하위 페이지 제목 뒤에 자동으로 붙음
+    default: `${SITE.name} — ${SITE.tagline}`,
+    template: `%s | ${SITE.name}`, // 하위 페이지 제목 뒤에 자동으로 붙음
   },
-  description:
-    "역대 로또 당첨번호를 빠르게 조회하고, 번호별 출현 통계를 한눈에 확인하는 정보 서비스입니다.",
-  keywords: ["로또", "당첨번호", "로또조회", "로또통계", "회차별 당첨번호"],
+  description: SITE.description,
+  keywords: ["만약에", "로또", "당첨번호", "주식 수익 계산", "그때 샀으면", "돈 계산기"],
   openGraph: {
-    title: "행운노트 — 로또 당첨번호 조회·통계",
-    description: "역대 당첨번호 조회와 번호 통계를 한 곳에서.",
+    title: `${SITE.name} — ${SITE.tagline}`,
+    description: SITE.description,
     type: "website",
     locale: "ko_KR",
   },
 };
 
-// 헤더 내비게이션 항목 (한 곳에서 관리 → 링크 추가가 쉬움)
+// 헤더 내비게이션.
+// 지금은 '행운노트(로또)' 서브브랜드만 라이브라 그 주요 기능들을 노출.
+// 다른 서브브랜드가 라이브되면 섹션 단위로 확장할 예정.
 const NAV = [
   { href: "/", label: "홈" },
-  { href: "/lotto", label: "당첨번호 조회" },
-  { href: "/stats", label: "번호 통계" },
-  { href: "/tools/generator", label: "번호 생성기" },
+  { href: "/lotto", label: "🍀 행운노트" },
   { href: "/tools/challenge", label: "1등 도전" },
-  { href: "/ranking", label: "오늘의 랭킹" },
+  { href: "/ranking", label: "랭킹" },
 ];
 
 export default function RootLayout({
@@ -41,8 +40,11 @@ export default function RootLayout({
         {/* ── 공통 헤더 ── */}
         <header className="border-b border-slate-200 bg-white">
           <div className="mx-auto max-w-3xl px-4 py-3 flex items-center justify-between gap-4">
-            <Link href="/" className="text-lg font-extrabold text-indigo-600">
-              🍀 행운노트
+            <Link
+              href="/"
+              className="text-lg font-extrabold text-indigo-600 whitespace-nowrap"
+            >
+              {SITE.emoji} {SITE.name}
             </Link>
             <nav className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
               {NAV.map((item) => (
@@ -73,11 +75,12 @@ export default function RootLayout({
               <Link href="/contact" className="hover:text-indigo-600">문의</Link>
             </div>
             <p className="text-xs leading-relaxed text-slate-400">
-              본 사이트는 이미 공개된 로또 추첨 결과를 정리해 제공하는 정보
-              서비스이며, 복권 구매를 알선하거나 당첨을 보장하지 않습니다.
-              구매는 동행복권 등 공식 판매처를 이용하세요.
+              {SITE.name}는 공개된 데이터를 정리해 &lsquo;만약에 얼마?&rsquo;를
+              재미로 보여주는 정보 서비스입니다. 로또·복권 관련 정보는 구매를
+              알선하거나 당첨을 보장하지 않으며, 투자·수익 계산 결과 또한
+              참고용으로 실제 수익을 보장하지 않습니다.
             </p>
-            <p className="text-xs text-slate-400">© 2026 행운노트</p>
+            <p className="text-xs text-slate-400">© 2026 {SITE.name}</p>
           </div>
         </footer>
       </body>
