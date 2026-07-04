@@ -28,6 +28,12 @@ const CALCULATORS = [
     title: "이직 연봉 계산기",
     desc: "이직으로 벌어지는 누적 소득 차이",
   },
+  {
+    href: "/calc/savings",
+    emoji: "🏦",
+    title: "적금·예금 계산기",
+    desc: "세후 만기 수령액 계산",
+  },
 ];
 
 export default function CalcHomePage() {
