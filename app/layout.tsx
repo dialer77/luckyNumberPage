@@ -3,6 +3,8 @@ import Link from "next/link";
 import "./globals.css";
 import { SITE } from "@/lib/brand";
 import Nav from "./components/Nav";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // Google AdSense 게시자 ID
 const ADSENSE_CLIENT = "ca-pub-4718898950361659";
@@ -92,6 +94,10 @@ export default function RootLayout({
             <p className="text-xs text-slate-400">© 2026 {SITE.name}</p>
           </div>
         </footer>
+
+        {/* 방문자 분석 + 속도 측정 (Vercel) */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
