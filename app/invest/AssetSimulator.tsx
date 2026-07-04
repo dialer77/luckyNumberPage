@@ -9,6 +9,7 @@ import {
   CURRENT_YEAR,
   simulateInvest,
   simulateDCA,
+  encodeInvestShare,
   type Asset,
 } from "@/lib/invest-data";
 import { formatKRW, whatCanYouBuy } from "@/lib/lotto-data";
@@ -109,6 +110,7 @@ function LumpMode({
         profit={profit}
         gain={gain}
         buys={buys}
+        shareCode={encodeInvestShare({ assetKey: a.key, mode: "lump", year, amount, nowValue })}
       />
     </div>
   );
@@ -171,6 +173,7 @@ function DcaMode({
         profit={profit}
         gain={gain}
         buys={buys}
+        shareCode={encodeInvestShare({ assetKey: a.key, mode: "dca", year, amount: invested, nowValue })}
       />
     </div>
   );
@@ -183,6 +186,7 @@ function ResultCard({
   profit,
   gain,
   buys,
+  shareCode,
   children,
 }: {
   headline: string;
@@ -190,8 +194,22 @@ function ResultCard({
   profit: number;
   gain: boolean;
   buys: { emoji: string; label: string; text: string }[];
+  shareCode?: string;
   children?: React.ReactNode;
 }) {
+  const [copied, setCopied] = useState(false);
+
+  async function share() {
+    if (!shareCode) return;
+    const url = `${window.location.origin}/invest/r/${shareCode}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+    } catch {
+      window.open(`/invest/r/${shareCode}`, "_blank");
+    }
+  }
+
   return (
     <section className="rounded-2xl bg-gradient-to-br from-indigo-50 to-white p-6 ring-1 ring-indigo-100">
       <div className="text-sm text-slate-500">{headline}, 지금은</div>
@@ -204,6 +222,17 @@ function ResultCard({
         </span>
       </div>
       {children}
+      {shareCode && (
+        <div className="mt-4 flex items-center gap-3">
+          <button
+            onClick={share}
+            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+          >
+            결과 공유 링크 복사
+          </button>
+          {copied && <span className="text-sm text-indigo-600">복사됐어요! 🔗</span>}
+        </div>
+      )}
       <div className="mt-4 border-t border-indigo-100 pt-4">
         <div className="text-xs text-slate-400">이 돈이면?</div>
         <ul className="mt-2 flex flex-wrap gap-2">

@@ -48,6 +48,37 @@ export function assetsByCategory(cat: AssetCategory): Asset[] {
   return ASSETS.filter((a) => a.category === cat);
 }
 
+// ── 결과 공유용 인코딩/디코딩 ──
+// 예: "bitcoin-l-2015-1000000-350000000" (자산-모드(l/d)-시점-투자금-현재가치)
+export type InvestShare = {
+  assetKey: string;
+  mode: "lump" | "dca";
+  year: number;
+  amount: number; // 일시불=투자금 / 적립식=총 납입금
+  nowValue: number;
+};
+
+export function encodeInvestShare(s: InvestShare): string {
+  return `${s.assetKey}-${s.mode === "dca" ? "d" : "l"}-${s.year}-${s.amount}-${s.nowValue}`;
+}
+
+export function decodeInvestShare(code: string): InvestShare | null {
+  const p = code.split("-");
+  if (p.length !== 5) return null;
+  const year = Number(p[2]);
+  const amount = Number(p[3]);
+  const nowValue = Number(p[4]);
+  if (![year, amount, nowValue].every(Number.isFinite)) return null;
+  if (!getAsset(p[0])) return null;
+  return {
+    assetKey: p[0],
+    mode: p[1] === "d" ? "dca" : "lump",
+    year,
+    amount,
+    nowValue,
+  };
+}
+
 // 특정 소수 연도(예: 2019.5)의 가격을 선형 보간으로 추정 (DCA용).
 function priceAtYear(asset: Asset, y: number): number {
   const years = Object.keys(asset.prices)
