@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
-/* 사이트 전역 스타일. 색상은 대부분 Tailwind 클래스로 처리하므로
-   여기서는 폰트/기본값만 최소로 둡니다. */
+/* 사이트 전역 스타일. */
 html {
   scroll-behavior: smooth;
 }
@@ -10,4 +9,31 @@ body {
   font-family: system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   /* 한국어는 단어 중간에서 줄이 끊기면 어색하므로 어절 단위로 줄바꿈 */
   word-break: keep-all;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #1e293b; /* slate-800 */
+  /* 상단에 은은한 보라 글로우 + 밝은 배경 */
+  background:
+    radial-gradient(900px 500px at 50% -260px, rgba(99, 102, 241, 0.12), transparent 70%),
+    radial-gradient(700px 400px at 100% 0, rgba(139, 92, 246, 0.07), transparent 70%),
+    #f7f8fc;
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(99, 102, 241, 0.18);
+}
+
+/* 재사용 유틸 */
+@utility card {
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.04);
+  outline: 1px solid rgba(15, 23, 42, 0.06);
+  outline-offset: -1px;
+}
+
+/* details 기본 마커 숨김 (FAQ) */
+summary::-webkit-details-marker {
+  display: none;
 }

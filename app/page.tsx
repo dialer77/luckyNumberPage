@@ -18,10 +18,19 @@ export default async function HomePage() {
   return (
     <div className="space-y-12">
       {/* ── 히어로: 우산 브랜드 ── */}
-      <section className="text-center">
-        <div className="text-4xl">{SITE.emoji}</div>
-        <h1 className="mt-3 text-2xl font-extrabold sm:text-3xl">만약에, 얼마?</h1>
-        <p className="mx-auto mt-3 max-w-sm text-pretty text-sm leading-relaxed text-slate-500">
+      <section className="relative pt-6 text-center">
+        {/* 뒤 글로우 */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-0 -z-10 h-40 w-40 -translate-x-1/2 rounded-full bg-indigo-400/25 blur-3xl"
+        />
+        <div className="text-5xl drop-shadow-sm">{SITE.emoji}</div>
+        <h1 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
+          <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-600 bg-clip-text text-transparent">
+            만약에, 얼마?
+          </span>
+        </h1>
+        <p className="mx-auto mt-4 max-w-sm text-pretty text-sm leading-relaxed text-slate-500">
           로또에 당첨되면, 그때 그 주식을 샀으면, 세금을 떼면 —
           <br />
           <b className="text-slate-700">&lsquo;만약에 얼마?&rsquo;</b>를 재미로
@@ -36,11 +45,16 @@ export default async function HomePage() {
             <Link
               key={brand.key}
               href={brand.href}
-              className="flex flex-col rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:shadow-md"
+              className="group flex flex-col rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-950/5 transition hover:-translate-y-1 hover:shadow-lg hover:ring-indigo-200"
             >
-              <div className="text-3xl">{brand.emoji}</div>
-              <div className="mt-2 font-bold">{brand.name}</div>
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-2xl ring-1 ring-indigo-100 transition group-hover:bg-indigo-100">
+                {brand.emoji}
+              </div>
+              <div className="mt-3 font-bold">{brand.name}</div>
               <div className="mt-1 text-sm text-slate-500">{brand.tagline}</div>
+              <div className="mt-3 text-sm font-medium text-indigo-600 opacity-0 transition group-hover:opacity-100">
+                바로가기 →
+              </div>
             </Link>
           ) : (
             <div

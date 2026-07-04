@@ -57,15 +57,18 @@ export default function RootLayout({
           }),
         }}
       />
-      <body className="min-h-full flex flex-col bg-slate-50 text-slate-800">
+      <body className="min-h-full flex flex-col text-slate-800">
         {/* ── 공통 헤더 (상단 고정) ── */}
-        <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur">
+        <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-white/70 backdrop-blur-md">
           <div className="mx-auto max-w-3xl px-4 py-3 flex items-center justify-between gap-4">
             <Link
               href="/"
-              className="text-lg font-extrabold text-indigo-600 whitespace-nowrap"
+              className="whitespace-nowrap text-lg font-extrabold tracking-tight"
             >
-              {SITE.emoji} {SITE.name}
+              <span className="mr-1">{SITE.emoji}</span>
+              <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+                {SITE.name}
+              </span>
             </Link>
             <Nav />
           </div>
