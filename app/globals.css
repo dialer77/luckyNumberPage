@@ -8,4 +8,6 @@ html {
 
 body {
   font-family: system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  /* 한국어는 단어 중간에서 줄이 끊기면 어색하므로 어절 단위로 줄바꿈 */
+  word-break: keep-all;
 }

@@ -20,8 +20,9 @@ export default function HomePage() {
       <section className="text-center">
         <div className="text-4xl">{SITE.emoji}</div>
         <h1 className="mt-3 text-2xl font-extrabold sm:text-3xl">만약에, 얼마?</h1>
-        <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-500">
-          로또에 당첨되면, 그때 그 주식을 샀으면, 세금을 떼면 —{" "}
+        <p className="mx-auto mt-3 max-w-sm text-pretty text-sm leading-relaxed text-slate-500">
+          로또에 당첨되면, 그때 그 주식을 샀으면, 세금을 떼면 —
+          <br />
           <b className="text-slate-700">&lsquo;만약에 얼마?&rsquo;</b>를 재미로
           확인하는 곳이에요.
         </p>
