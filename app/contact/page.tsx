@@ -15,12 +15,11 @@ export default function ContactPage() {
       </p>
       <p className="rounded-lg bg-white p-4 shadow-sm ring-1 ring-slate-100">
         📧 이메일:{" "}
-        {/* 배포 시 실제 연락 가능한 주소로 교체하세요 */}
         <a
-          href="mailto:contact@example.com"
+          href="mailto:dialer1993@gmail.com"
           className="font-medium text-indigo-600 hover:underline"
         >
-          contact@example.com
+          dialer1993@gmail.com
         </a>
       </p>
     </article>
