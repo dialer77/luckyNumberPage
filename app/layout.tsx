@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Script from "next/script";
 import "./globals.css";
 import { SITE } from "@/lib/brand";
+
+// Google AdSense 게시자 ID
+const ADSENSE_CLIENT = "ca-pub-4718898950361659";
 
 // 사이트 전체 공통 메타데이터 (SEO + 공유 미리보기의 기본값).
 // 개별 페이지에서 title/description을 export 하면 이 값을 덮어씀.
@@ -19,6 +23,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ko_KR",
   },
+  // AdSense 사이트 소유 확인용 메타 태그
+  other: { "google-adsense-account": ADSENSE_CLIENT },
 };
 
 // 헤더 내비게이션.
@@ -37,6 +43,15 @@ export default function RootLayout({
   return (
     <html lang="ko" className="h-full">
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-800">
+        {/* Google AdSense 로더 (심사·광고 게재용) */}
+        <Script
+          id="adsbygoogle-init"
+          async
+          strategy="afterInteractive"
+          crossOrigin="anonymous"
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+        />
+
         {/* ── 공통 헤더 ── */}
         <header className="border-b border-slate-200 bg-white">
           <div className="mx-auto max-w-3xl px-4 py-3 flex items-center justify-between gap-4">
