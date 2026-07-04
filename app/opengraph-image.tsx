@@ -1,14 +1,15 @@
 import { ImageResponse } from "next/og";
 import { loadKoreanFont } from "@/lib/og";
+import { SITE } from "@/lib/brand";
 
 // 사이트 기본 공유 카드 (홈 등 개별 카드가 없는 페이지 공유 시 사용)
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function Image() {
-  const title = "행운노트";
-  const subtitle = "로또 당첨번호 조회 · 통계 · 번호 생성기";
-  const fontText = title + subtitle;
+  const title = SITE.name;
+  const subtitle = SITE.tagline;
+  const fontText = title + subtitle + SITE.emoji;
 
   let fonts;
   try {
@@ -33,7 +34,9 @@ export default async function Image() {
           fontFamily: "Noto Sans KR",
         }}
       >
-        <div style={{ fontSize: 90, fontWeight: 700 }}>{`🍀 ${title}`}</div>
+        <div style={{ fontSize: 90, fontWeight: 700 }}>
+          {`${SITE.emoji} ${title}`}
+        </div>
         <div style={{ fontSize: 40, marginTop: 20, opacity: 0.9 }}>
           {subtitle}
         </div>
