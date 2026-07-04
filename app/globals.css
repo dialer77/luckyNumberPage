@@ -17,7 +17,7 @@ body {
     radial-gradient(900px 500px at 50% -260px, rgba(99, 102, 241, 0.12), transparent 70%),
     radial-gradient(700px 400px at 100% 0, rgba(139, 92, 246, 0.07), transparent 70%),
     #f7f8fc;
-  background-attachment: fixed;
+  background-repeat: no-repeat;
 }
 
 ::selection {

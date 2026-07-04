@@ -14,57 +14,15 @@ import {
   type LottoDraw,
 } from "./lotto-data";
 
-const API = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=";
 const ROUND1_UTC = Date.UTC(2002, 11, 7); // 1회차 추첨일 2002-12-07(토)
 const WEEK = 7 * 24 * 3600 * 1000;
 
-// getLottoNumber는 2·3등 금액을 주지 않음 → 근사 추정 (참고용)
-function estimatePrizes(firstWinAmount: number) {
-  return {
-    prize2: Math.max(0, Math.round(firstWinAmount * 0.025)),
-    prize3: 1_500_000,
-  };
-}
-
-// 동행복권에서 한 회차 fetch (성공 시 LottoDraw, 아니면 null)
-async function fetchDraw(n: number): Promise<LottoDraw | null> {
-  try {
-    const res = await fetch(`${API}${n}`, {
-      signal: AbortSignal.timeout(6000),
-      headers: { "User-Agent": "Mozilla/5.0" },
-    });
-    if (!res.ok) return null;
-    const j = await res.json();
-    if (j?.returnValue !== "success") return null;
-    const firstWinAmount = Number(j.firstWinamnt) || 0;
-    const { prize2, prize3 } = estimatePrizes(firstWinAmount);
-    return {
-      drwNo: Number(j.drwNo),
-      drwNoDate: String(j.drwNoDate),
-      numbers: [j.drwtNo1, j.drwtNo2, j.drwtNo3, j.drwtNo4, j.drwtNo5, j.drwtNo6].map(
-        Number
-      ) as [number, number, number, number, number, number],
-      bonus: Number(j.bnusNo),
-      firstWinAmount,
-      firstWinnerCount: Number(j.firstPrzwnerCo) || 0,
-      prize2,
-      prize3,
-    };
-  } catch {
-    return null;
-  }
-}
-
-// 실데이터 한 회차 (캐시 영구). 폴백 없음.
+// 실데이터 한 회차 = Upstash 조회만 (동행복권이 Vercel IP를 차단하므로
+// 서버에서 직접 fetch하지 않음 → FCP/TTFB 개선). Upstash 채우기는
+// scripts/backfill-lotto.mjs 를 집 PC(한국 IP)에서 실행해 수행.
 async function getRealDraw(n: number): Promise<LottoDraw | null> {
-  const key = `lotto:${n}`;
-  if (redis) {
-    const hit = await redis.get<LottoDraw>(key);
-    if (hit) return hit;
-  }
-  const d = await fetchDraw(n);
-  if (d && redis) await redis.set(key, d);
-  return d;
+  if (!redis) return null;
+  return (await redis.get<LottoDraw>(`lotto:${n}`)) ?? null;
 }
 
 // 한 회차 (실데이터 → 예시 폴백)

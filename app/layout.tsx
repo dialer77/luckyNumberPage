@@ -34,6 +34,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko" className="h-full">
+      {/* AdSense 도메인 연결을 미리 열어 스크립트 로드 지연 완화 (FCP 개선) */}
+      <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+      <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+
       {/* Google AdSense 로더 — React 19가 async 스크립트를 <head>로 끌어올려
           서버 렌더링 HTML에 그대로 찍힙니다(애드센스 심사 크롤러가 인식). */}
       <script
