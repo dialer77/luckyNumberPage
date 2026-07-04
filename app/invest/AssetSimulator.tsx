@@ -5,7 +5,6 @@
 
 import { useState } from "react";
 import {
-  getAsset,
   PAST_YEARS,
   CURRENT_YEAR,
   simulateInvest,
@@ -25,15 +24,12 @@ const WEEKLY_AMOUNTS = [
   { v: 50_000, label: "5만원" },
 ];
 
-export default function AssetSimulator({ assetKey }: { assetKey: string }) {
-  const asset = getAsset(assetKey);
+export default function AssetSimulator({ asset }: { asset: Asset }) {
   const [mode, setMode] = useState<"lump" | "dca">("lump");
   const [year, setYear] = useState(PAST_YEARS[0]);
   const [lumpAmount, setLumpAmount] = useState(1_000_000);
   const [weekly, setWeekly] = useState(5_000);
   const [freq, setFreq] = useState<"week" | "day">("week");
-
-  if (!asset) return null;
 
   return (
     <div className="space-y-5">
