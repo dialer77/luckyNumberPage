@@ -1,6 +1,26 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Faq from "../components/Faq";
 import { CATEGORIES, assetsByCategory } from "@/lib/invest-data";
+
+const INVEST_FAQ = [
+  {
+    q: "'그때 샀으면'은 어떻게 계산하나요?",
+    a: "선택한 시점의 가격 대비 현재 가격의 비율로 환산합니다. 예를 들어 그때보다 지금 가격이 3배면 투자금도 3배가 됩니다. 코인·미국주식·금은 실제 시세를 반영합니다.",
+  },
+  {
+    q: "적립식(DCA)이 무엇인가요?",
+    a: "한 번에 목돈을 넣는 대신 매주·매일 일정 금액을 나눠 사는 방식입니다. 가격이 오르내려도 평균 단가로 매수하는 효과가 있어요.",
+  },
+  {
+    q: "실제 투자 수익과 같나요?",
+    a: "참고용 시뮬레이션입니다. 매매 수수료·세금·배당은 단순화했고, 과거 수익이 미래를 보장하지 않습니다.",
+  },
+  {
+    q: "고배당 ETF 배당 계산기는 뭐가 다른가요?",
+    a: "주가 시세가 아니라 배당을 재투자(복리)했을 때 얼마가 되는지를 계산합니다. '월 100만원 배당 받으려면 얼마 필요한지' 역산도 가능해요.",
+  },
+];
 
 export const metadata: Metadata = {
   title: "그때샀으면 — 그때 샀으면 지금 얼마?",
@@ -61,6 +81,8 @@ export default function InvestHomePage() {
           </div>
         </Link>
       </section>
+
+      <Faq items={INVEST_FAQ} />
     </div>
   );
 }

@@ -1,9 +1,29 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import NumberBall from "../components/NumberBall";
+import Faq from "../components/Faq";
 import { formatKRW, afterTax } from "@/lib/lotto-data";
 import { getLiveLatest } from "@/lib/lotto-live";
 import { LOTTO_FEATURES } from "@/lib/brand";
+
+const LOTTO_FAQ = [
+  {
+    q: "로또 1등 당첨 확률은 얼마인가요?",
+    a: "6개 번호를 모두 맞힐 확률은 1/8,145,060 입니다. 45개 숫자 중 6개를 고르는 모든 경우의 수예요.",
+  },
+  {
+    q: "로또 당첨금에 세금이 붙나요?",
+    a: "네. 복권 당첨금은 3억원 이하는 22%, 3억원 초과분은 33%가 과세됩니다. 실제 받는 세후 금액은 '당첨금 실수령액 계산기'에서 확인할 수 있어요.",
+  },
+  {
+    q: "로또 추첨은 언제 하나요?",
+    a: "매주 토요일 저녁에 추첨합니다. 이 사이트의 당첨번호는 추첨 후 자동으로 업데이트됩니다.",
+  },
+  {
+    q: "내 번호가 당첨됐는지 어떻게 확인하나요?",
+    a: "'내 번호 당첨확인'에 번호를 저장해두면 매주 최신 회차와 자동으로 대조해 몇 개 맞았는지·등수를 알려줍니다. 회원가입 없이 이용할 수 있어요.",
+  },
+];
 
 // 행운노트 서브브랜드 "대문" — 기능들을 카드로 정리해 보여주는 랜딩.
 export const metadata: Metadata = {
@@ -66,6 +86,8 @@ export default async function LottoHomePage() {
           </Link>
         ))}
       </div>
+
+      <Faq items={LOTTO_FAQ} />
     </div>
   );
 }

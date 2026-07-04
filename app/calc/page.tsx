@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Faq from "../components/Faq";
 
 export const metadata: Metadata = {
   title: "머니계산기 — 당첨금 실수령·복리 계산",
@@ -7,6 +8,25 @@ export const metadata: Metadata = {
     "로또 당첨금 세후 실수령액, 복리 이자 등 돈과 관련된 계산기 모음.",
   alternates: { canonical: "/calc" },
 };
+
+const CALC_FAQ = [
+  {
+    q: "당첨금 실수령액은 어떻게 계산하나요?",
+    a: "복권 당첨금은 3억원 이하 22%, 3억원 초과분 33%가 과세됩니다. 세전 금액을 넣으면 세금을 뺀 실수령액을 바로 보여줍니다.",
+  },
+  {
+    q: "복리와 단리는 뭐가 다른가요?",
+    a: "단리는 원금에만 이자가 붙고, 복리는 이자에도 이자가 붙습니다. 기간이 길수록 복리 효과가 커져요. 복리 계산기로 확인해 보세요.",
+  },
+  {
+    q: "적금과 예금의 차이는 무엇인가요?",
+    a: "적금은 매달 일정액을 나눠 넣는 방식, 예금은 목돈을 한 번에 예치하는 방식입니다. 같은 금리라도 이자 계산 방식이 달라요.",
+  },
+  {
+    q: "이직하면 소득이 얼마나 차이나나요?",
+    a: "연봉은 매년 인상률만큼 복리로 오르기 때문에, 이직으로 올린 연봉 차이도 시간이 갈수록 벌어집니다. 이직 연봉 계산기로 누적 차이를 볼 수 있어요.",
+  },
+];
 
 // 머니계산기 "대문" — 계산기들을 카드로 정리.
 const CALCULATORS = [
@@ -61,6 +81,8 @@ export default function CalcHomePage() {
           </Link>
         ))}
       </div>
+
+      <Faq items={CALC_FAQ} />
     </div>
   );
 }
