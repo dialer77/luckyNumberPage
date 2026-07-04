@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "머니계산기 — 당첨금 실수령·복리 계산",
   description:
     "로또 당첨금 세후 실수령액과 복리 이자를 간단히 계산해 보세요.",
+  alternates: { canonical: "/calc" },
 };
 
 export default function CalcPage() {

@@ -48,6 +48,22 @@ export default function RootLayout({
         src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
         crossOrigin="anonymous"
       />
+
+      {/* 구조화 데이터(JSON-LD) — 검색엔진이 사이트 정체성을 이해하도록 */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: SITE.name,
+            alternateName: "만약에 얼마",
+            url: SITE.url,
+            description: SITE.description,
+            inLanguage: "ko-KR",
+          }),
+        }}
+      />
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-800">
         {/* ── 공통 헤더 ── */}
         <header className="border-b border-slate-200 bg-white">

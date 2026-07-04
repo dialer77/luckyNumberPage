@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "그때샀으면 — 그때 샀으면 지금 얼마?",
   description:
     "그때 삼성전자·애플·비트코인을 샀다면 지금 얼마가 됐을까? 금액과 시점을 넣어 수익을 시뮬레이션해 보세요.",
+  alternates: { canonical: "/invest" },
 };
 
 export default function InvestPage() {

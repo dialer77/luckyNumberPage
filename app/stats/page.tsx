@@ -5,6 +5,7 @@ import { getNumberFrequency, getAllDraws } from "@/lib/lotto-data";
 export const metadata: Metadata = {
   title: "번호 출현 통계",
   description: "역대 회차에서 각 번호가 몇 번 나왔는지 집계한 통계입니다.",
+  alternates: { canonical: "/stats" },
 };
 
 export default function StatsPage() {

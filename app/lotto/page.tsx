@@ -9,6 +9,7 @@ import { LOTTO_FEATURES } from "@/lib/brand";
 export const metadata: Metadata = {
   title: "행운노트 — 회차별 당첨번호 조회",
   description: "역대 로또 회차별 당첨번호를 최신순으로 조회합니다.",
+  alternates: { canonical: "/lotto" },
 };
 
 export default function LottoListPage() {

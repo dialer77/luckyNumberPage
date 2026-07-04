@@ -10,6 +10,7 @@ import {
   calcTax,
   afterTax,
 } from "@/lib/lotto-data";
+import { SITE } from "@/lib/brand";
 
 // ─────────────────────────────────────────────────────────────
 // 동적 라우트: /lotto/1180, /lotto/1179 ...
@@ -34,10 +35,11 @@ export async function generateMetadata({
   if (!draw) return { title: "회차를 찾을 수 없음" };
 
   return {
-    title: `${draw.drwNo}회 당첨번호 (${draw.drwNoDate})`,
-    description: `제 ${draw.drwNo}회 로또 당첨번호: ${draw.numbers.join(
+    title: `${draw.drwNo}회 로또 당첨번호 (${draw.drwNoDate})`,
+    description: `제 ${draw.drwNo}회 로또 당첨번호는 ${draw.numbers.join(
       ", "
-    )} + 보너스 ${draw.bonus}`,
+    )} + 보너스 ${draw.bonus}. 1등 당첨금과 세후 실수령액까지 한눈에 확인하세요.`,
+    alternates: { canonical: `/lotto/${draw.drwNo}` },
   };
 }
 
@@ -50,8 +52,30 @@ export default async function DrawDetailPage({
   // 없는 회차면 404 페이지로
   if (!draw) notFound();
 
+  const numbersText = draw.numbers.join(", ");
+
   return (
     <div className="space-y-6">
+      {/* 구조화 데이터: 경로(빵부스러기) → 검색결과 계층 표시 */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "행운노트", item: `${SITE.url}/lotto` },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: `${draw.drwNo}회 당첨번호`,
+                item: `${SITE.url}/lotto/${draw.drwNo}`,
+              },
+            ],
+          }),
+        }}
+      />
+
       <Link href="/lotto" className="text-sm text-indigo-600 hover:underline">
         ← 회차 목록으로
       </Link>
@@ -95,6 +119,22 @@ export default async function DrawDetailPage({
           </div>
         </dl>
       </section>
+
+      {/* 검색 유입용 설명 문단 (사람과 검색엔진 모두를 위한 텍스트) */}
+      <div className="rounded-2xl bg-white p-5 text-sm leading-relaxed text-slate-600 shadow-sm ring-1 ring-slate-100">
+        <p>
+          <b>제 {draw.drwNo}회 로또 당첨번호</b>는 {draw.drwNoDate} 추첨에서
+          {" "}
+          <b>{numbersText}</b>, 보너스 번호는 <b>{draw.bonus}</b>번입니다. 이번
+          회차 1등은 {draw.firstWinnerCount}명으로, 1게임당 당첨금은 세전{" "}
+          {formatKRW(draw.firstWinAmount)}이며 세금(약 33%)을 공제한 세후
+          실수령액은 약 {formatKRW(afterTax(draw.firstWinAmount))}입니다.
+        </p>
+        <p className="mt-2 text-slate-400">
+          당첨번호는 이미 공개된 추첨 결과를 정리한 정보이며, 구매를 권유하지
+          않습니다.
+        </p>
+      </div>
 
       {/* 재미(공유) 요소: 세후 실수령액이면 뭘 살 수 있나 */}
       <WhatCanYouBuy amount={afterTax(draw.firstWinAmount)} />

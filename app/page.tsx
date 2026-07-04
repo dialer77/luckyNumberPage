@@ -1,7 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import NumberBall from "./components/NumberBall";
 import { getLatestDraw, formatKRW, afterTax } from "@/lib/lotto-data";
 import { SITE, SUB_BRANDS } from "@/lib/brand";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 // 우산 허브 홈.
 // 상단: "만약에" 브랜드 소개 → 서브브랜드 3종 진입 카드 → 행운노트 스포트라이트.
