@@ -27,8 +27,8 @@ export const metadata: Metadata = {
 const NAV = [
   { href: "/", label: "홈" },
   { href: "/lotto", label: "🍀 행운노트" },
-  { href: "/tools/challenge", label: "1등 도전" },
-  { href: "/ranking", label: "랭킹" },
+  { href: "/invest", label: "📈 그때샀으면" },
+  { href: "/calc", label: "🧮 머니계산기" },
 ];
 
 export default function RootLayout({

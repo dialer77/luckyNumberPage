@@ -37,14 +37,16 @@ export const SUB_BRANDS: SubBrand[] = [
     emoji: "📈",
     name: "그때샀으면",
     tagline: "그때 주식·코인을 샀다면 지금 얼마가 됐을까?",
-    status: "soon",
+    status: "live",
+    href: "/invest",
   },
   {
     key: "calc",
     emoji: "🧮",
     name: "머니계산기",
     tagline: "당첨금 실수령·세금·복리 등 돈 계산 모음",
-    status: "soon",
+    status: "live",
+    href: "/calc",
   },
 ];
 
