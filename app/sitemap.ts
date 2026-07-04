@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
     "",
     "/lotto",
+    "/lotto/my",
     "/lotto/list",
     "/stats",
     "/tools/generator",
