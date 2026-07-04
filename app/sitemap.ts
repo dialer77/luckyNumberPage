@@ -18,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/calc",
     "/calc/prize",
     "/calc/compound",
+    "/calc/salary",
     "/about",
   ].map((path) => ({
     url: `${BASE_URL}${path}`,

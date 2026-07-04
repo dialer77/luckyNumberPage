@@ -22,6 +22,12 @@ const CALCULATORS = [
     title: "복리 계산기",
     desc: "원금이 복리로 불어나면 얼마?",
   },
+  {
+    href: "/calc/salary",
+    emoji: "💼",
+    title: "이직 연봉 계산기",
+    desc: "이직으로 벌어지는 누적 소득 차이",
+  },
 ];
 
 export default function CalcHomePage() {
