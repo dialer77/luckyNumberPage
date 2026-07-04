@@ -34,10 +34,10 @@ export const ASSETS: Asset[] = [
   { key: "tesla", name: "테슬라", emoji: "🚗", category: "stock", prices: { 2015: 15, 2018: 21, 2020: 90, 2021: 250, 2023: 240, 2026: 430 } },
   { key: "nvidia", name: "엔비디아", emoji: "🎮", category: "stock", prices: { 2015: 7, 2018: 40, 2020: 130, 2021: 300, 2023: 490, 2026: 1350 } },
   // ── 코인 ──
-  { key: "bitcoin", name: "비트코인", emoji: "₿", category: "coin", prices: { 2015: 300, 2018: 7000, 2020: 9000, 2021: 47000, 2023: 30000, 2026: 105000 } },
+  { key: "bitcoin", name: "비트코인", emoji: "🪙", category: "coin", prices: { 2015: 300, 2018: 7000, 2020: 9000, 2021: 47000, 2023: 30000, 2026: 105000 } },
   { key: "ethereum", name: "이더리움", emoji: "💎", category: "coin", prices: { 2015: 1, 2018: 250, 2020: 200, 2021: 3700, 2023: 1900, 2026: 4200 } },
   // ── 금 ──
-  { key: "gold", name: "금", emoji: "🪙", category: "gold", prices: { 2015: 1100, 2018: 1300, 2020: 1900, 2021: 1800, 2023: 1950, 2026: 2650 } },
+  { key: "gold", name: "금", emoji: "🥇", category: "gold", prices: { 2015: 1100, 2018: 1300, 2020: 1900, 2021: 1800, 2023: 1950, 2026: 2650 } },
 ];
 
 export function getAsset(key: string): Asset | undefined {
