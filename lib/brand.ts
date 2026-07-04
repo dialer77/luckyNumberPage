@@ -52,7 +52,7 @@ export const SUB_BRANDS: SubBrand[] = [
 
 // 행운노트(로또) 서브브랜드의 세부 기능 — 홈 허브와 로또 섹션에서 사용.
 export const LOTTO_FEATURES = [
-  { href: "/lotto", emoji: "📜", title: "회차별 당첨번호", desc: "역대 회차를 한눈에 조회" },
+  { href: "/lotto/list", emoji: "📜", title: "회차별 당첨번호", desc: "역대 회차를 한눈에 조회" },
   { href: "/stats", emoji: "📊", title: "번호 출현 통계", desc: "어떤 번호가 자주 나왔나" },
   { href: "/tools/generator", emoji: "🎲", title: "번호 생성기", desc: "무작위 행운 번호 뽑기" },
   { href: "/tools/challenge", emoji: "🎯", title: "1등 도전 시뮬레이터", desc: "몇 번 만에 1등이 나올까?" },

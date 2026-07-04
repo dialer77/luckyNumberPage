@@ -1,13 +1,9 @@
 "use client";
-// "그때샀으면" 시뮬레이터 — 상호작용 필요 → Client Component.
+// 특정 자산 하나에 대한 "그때샀으면" 시뮬레이터.
+// 자산은 페이지에서 고정으로 넘겨받고(assetKey), 시점·금액만 조절.
 
 import { useState } from "react";
-import {
-  ASSETS,
-  PAST_YEARS,
-  CURRENT_YEAR,
-  simulateInvest,
-} from "@/lib/invest-data";
+import { getAsset, PAST_YEARS, CURRENT_YEAR, simulateInvest } from "@/lib/invest-data";
 import { formatKRW, whatCanYouBuy } from "@/lib/lotto-data";
 
 const PRESET_AMOUNTS = [
@@ -16,35 +12,21 @@ const PRESET_AMOUNTS = [
   { v: 10_000_000, label: "1천만원" },
 ];
 
-export default function Simulator() {
-  const [assetKey, setAssetKey] = useState(ASSETS[0].key);
+export default function AssetSimulator({ assetKey }: { assetKey: string }) {
+  const asset = getAsset(assetKey);
   const [year, setYear] = useState(PAST_YEARS[0]);
   const [amount, setAmount] = useState(1_000_000);
 
-  const asset = ASSETS.find((a) => a.key === assetKey)!;
+  if (!asset) return null;
+
   const { nowValue, profit, multiple } = simulateInvest(asset, year, amount);
   const gain = profit >= 0;
   const buys = whatCanYouBuy(nowValue).slice(0, 3);
 
   return (
     <div className="space-y-5">
-      {/* 자산 선택 */}
-      <Field label="무엇을">
-        <div className="flex flex-wrap gap-2">
-          {ASSETS.map((a) => (
-            <Chip
-              key={a.key}
-              active={a.key === assetKey}
-              onClick={() => setAssetKey(a.key)}
-            >
-              {a.emoji} {a.name}
-            </Chip>
-          ))}
-        </div>
-      </Field>
-
-      {/* 시점 선택 */}
-      <Field label="언제">
+      {/* 시점 */}
+      <Field label="언제 샀다면">
         <div className="flex flex-wrap gap-2">
           {PAST_YEARS.map((y) => (
             <Chip key={y} active={y === year} onClick={() => setYear(y)}>
@@ -93,7 +75,6 @@ export default function Simulator() {
           </span>
         </div>
 
-        {/* 이 돈이면? */}
         <div className="mt-4 border-t border-indigo-100 pt-4">
           <div className="text-xs text-slate-400">이 돈이면?</div>
           <ul className="mt-2 flex flex-wrap gap-2">
@@ -117,13 +98,7 @@ export default function Simulator() {
   );
 }
 
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
       <div className="mb-2 text-sm font-semibold text-slate-500">{label}</div>

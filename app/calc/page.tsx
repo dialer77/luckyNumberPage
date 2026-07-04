@@ -1,23 +1,54 @@
 import type { Metadata } from "next";
-import Calculators from "./Calculators";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "머니계산기 — 당첨금 실수령·복리 계산",
   description:
-    "로또 당첨금 세후 실수령액과 복리 이자를 간단히 계산해 보세요.",
+    "로또 당첨금 세후 실수령액, 복리 이자 등 돈과 관련된 계산기 모음.",
   alternates: { canonical: "/calc" },
 };
 
-export default function CalcPage() {
+// 머니계산기 "대문" — 계산기들을 카드로 정리.
+const CALCULATORS = [
+  {
+    href: "/calc/prize",
+    emoji: "🎯",
+    title: "당첨금 실수령액 계산기",
+    desc: "세전 당첨금 → 세금·세후 실수령액",
+  },
+  {
+    href: "/calc/compound",
+    emoji: "📈",
+    title: "복리 계산기",
+    desc: "원금이 복리로 불어나면 얼마?",
+  },
+];
+
+export default function CalcHomePage() {
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">🧮 머니계산기</h1>
         <p className="mt-1 text-sm text-slate-500">
-          돈과 관련된 계산을 간단히. 필요한 계산기가 하나씩 늘어납니다.
+          필요한 계산기를 골라보세요. 계산기는 하나씩 늘어납니다.
         </p>
       </div>
-      <Calculators />
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        {CALCULATORS.map((c) => (
+          <Link
+            key={c.href}
+            href={c.href}
+            className="flex items-start gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <span className="text-2xl">{c.emoji}</span>
+            <div>
+              <div className="font-semibold">{c.title}</div>
+              <div className="mt-0.5 text-sm text-slate-500">{c.desc}</div>
+            </div>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
