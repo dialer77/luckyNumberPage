@@ -11,7 +11,7 @@
 export const CURRENT_YEAR = 2026;
 export const PAST_YEARS = [2015, 2018, 2020, 2021, 2023];
 
-export type AssetCategory = "stock" | "coin" | "gold" | "dividend";
+export type AssetCategory = "stock" | "coin" | "gold";
 
 export type Asset = {
   key: string;
@@ -19,14 +19,12 @@ export type Asset = {
   emoji: string;
   category: AssetCategory;
   prices: Record<number, number>; // 연도 → 대략 가격 (2026 = 현재값)
-  dividendYield?: number; // 배당주만: 연 배당수익률(%) 예시
 };
 
 export const CATEGORIES: { key: AssetCategory; name: string; emoji: string }[] = [
   { key: "stock", name: "주식", emoji: "📈" },
   { key: "coin", name: "코인", emoji: "₿" },
   { key: "gold", name: "금", emoji: "🪙" },
-  { key: "dividend", name: "배당주", emoji: "💰" },
 ];
 
 export const ASSETS: Asset[] = [
@@ -40,11 +38,6 @@ export const ASSETS: Asset[] = [
   { key: "ethereum", name: "이더리움", emoji: "💎", category: "coin", prices: { 2015: 1, 2018: 250, 2020: 200, 2021: 3700, 2023: 1900, 2026: 4200 } },
   // ── 금 ──
   { key: "gold", name: "금", emoji: "🪙", category: "gold", prices: { 2015: 1100, 2018: 1300, 2020: 1900, 2021: 1800, 2023: 1950, 2026: 2650 } },
-  // ── 배당주 (dividendYield = 연 배당수익률 예시) ──
-  { key: "realty", name: "리얼티인컴", emoji: "🏢", category: "dividend", dividendYield: 5.2, prices: { 2015: 48, 2018: 55, 2020: 62, 2021: 68, 2023: 58, 2026: 64 } },
-  { key: "cocacola", name: "코카콜라", emoji: "🥤", category: "dividend", dividendYield: 3.0, prices: { 2015: 42, 2018: 47, 2020: 53, 2021: 55, 2023: 60, 2026: 70 } },
-  { key: "sktelecom", name: "SK텔레콤", emoji: "📡", category: "dividend", dividendYield: 6.5, prices: { 2015: 44000, 2018: 47000, 2020: 45000, 2021: 55000, 2023: 50000, 2026: 58000 } },
-  { key: "ktng", name: "KT&G", emoji: "🚬", category: "dividend", dividendYield: 5.5, prices: { 2015: 82000, 2018: 100000, 2020: 84000, 2021: 82000, 2023: 88000, 2026: 105000 } },
 ];
 
 export function getAsset(key: string): Asset | undefined {
@@ -84,25 +77,6 @@ export function simulateInvest(
   const multiple = now / then;
   const nowValue = Math.round(amount * multiple);
   return { nowValue, profit: nowValue - amount, multiple };
-}
-
-// ── 배당 재투자(DRIP) 포함: 시세차익 + 배당 복리 (근사) ──
-export function simulateWithDividend(
-  asset: Asset,
-  fromYear: number,
-  amount: number
-): { priceValue: number; dividendBonus: number; totalValue: number; profit: number } {
-  const base = simulateInvest(asset, fromYear, amount);
-  const years = CURRENT_YEAR - fromYear;
-  const dy = (asset.dividendYield ?? 0) / 100;
-  // 시세가치 위에 배당수익률만큼 매년 복리 재투자된다고 근사
-  const totalValue = Math.round(base.nowValue * Math.pow(1 + dy, years));
-  return {
-    priceValue: base.nowValue,
-    dividendBonus: totalValue - base.nowValue,
-    totalValue,
-    profit: totalValue - amount,
-  };
 }
 
 // ── 적립식(DCA): startYear부터 weeks주 동안 매주 weeklyAmount원씩 ──

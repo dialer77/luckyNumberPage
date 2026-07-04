@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tools/generator",
     "/tools/challenge",
     "/invest",
+    "/invest/dividend",
     "/calc",
     "/calc/prize",
     "/calc/compound",

@@ -9,7 +9,6 @@ import {
   PAST_YEARS,
   CURRENT_YEAR,
   simulateInvest,
-  simulateWithDividend,
   simulateDCA,
   type Asset,
 } from "@/lib/invest-data";
@@ -35,7 +34,6 @@ export default function AssetSimulator({ assetKey }: { assetKey: string }) {
   const [freq, setFreq] = useState<"week" | "day">("week");
 
   if (!asset) return null;
-  const isDividend = asset.category === "dividend";
 
   return (
     <div className="space-y-5">
@@ -52,7 +50,6 @@ export default function AssetSimulator({ assetKey }: { assetKey: string }) {
       {mode === "lump" ? (
         <LumpMode
           asset={asset}
-          isDividend={isDividend}
           year={year}
           setYear={setYear}
           amount={lumpAmount}
@@ -81,26 +78,21 @@ export default function AssetSimulator({ assetKey }: { assetKey: string }) {
 // ── 일시불 모드 ──
 function LumpMode({
   asset,
-  isDividend,
   year,
   setYear,
   amount,
   setAmount,
 }: {
   asset: Asset;
-  isDividend: boolean;
   year: number;
   setYear: (n: number) => void;
   amount: number;
   setAmount: (n: number) => void;
 }) {
   const a = asset;
-  const div = simulateWithDividend(a, year, amount);
-  const plain = simulateInvest(a, year, amount);
-  const finalValue = isDividend ? div.totalValue : plain.nowValue;
-  const profit = finalValue - amount;
+  const { nowValue, profit } = simulateInvest(a, year, amount);
   const gain = profit >= 0;
-  const buys = whatCanYouBuy(finalValue).slice(0, 3);
+  const buys = whatCanYouBuy(nowValue).slice(0, 3);
 
   return (
     <div className="space-y-5">
@@ -117,20 +109,11 @@ function LumpMode({
 
       <ResultCard
         headline={`${year}년에 ${a.emoji} ${a.name}에 ${formatKRW(amount)}`}
-        value={finalValue}
+        value={nowValue}
         profit={profit}
         gain={gain}
         buys={buys}
-      >
-        {isDividend && (
-          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
-            <span>시세차익 {formatKRW(div.priceValue)}</span>
-            <span className="text-emerald-600">
-              + 배당 재투자 {formatKRW(div.dividendBonus)}
-            </span>
-          </div>
-        )}
-      </ResultCard>
+      />
     </div>
   );
 }

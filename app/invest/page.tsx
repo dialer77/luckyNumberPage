@@ -38,17 +38,29 @@ export default function InvestHomePage() {
                 >
                   <span className="text-3xl">{a.emoji}</span>
                   <span className="font-semibold">{a.name}</span>
-                  {a.dividendYield && (
-                    <span className="text-xs text-slate-400">
-                      배당 {a.dividendYield}%
-                    </span>
-                  )}
                 </Link>
               ))}
             </div>
           </section>
         );
       })}
+
+      {/* 배당 ETF는 시세 시뮬 대신 배당 재투자 계산기로 */}
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold text-slate-500">💰 배당</h2>
+        <Link
+          href="/invest/dividend"
+          className="flex items-start gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:shadow-md"
+        >
+          <span className="text-2xl">💰</span>
+          <div>
+            <div className="font-semibold">고배당 ETF 배당 계산기</div>
+            <div className="mt-0.5 text-sm text-slate-500">
+              시작금액·납입·배당율·기간으로 배당 재투자(복리) 계산
+            </div>
+          </div>
+        </Link>
+      </section>
     </div>
   );
 }
