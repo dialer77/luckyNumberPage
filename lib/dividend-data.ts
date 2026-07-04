@@ -53,6 +53,34 @@ export type DividendResult = {
   lastYearDividend: number; // 마지막 해 예상 연 배당
 };
 
+// ── 목표 배당 역산 ──
+// 월 target원의 배당을 받으려면 필요한 투자 원금 (= 연배당/배당율)
+export function requiredPrincipal(targetMonthly: number, yieldPct: number): number {
+  if (yieldPct <= 0) return 0;
+  return Math.round((targetMonthly * 12) / (yieldPct / 100));
+}
+
+// 시작금액 + 매월 납입(+배당 재투자)으로 목표에 도달하기까지 걸리는 개월 수.
+// 100년 내 도달 못 하면 null.
+export function monthsToTarget(
+  initial: number,
+  monthlyContribution: number,
+  yieldPct: number,
+  targetMonthly: number
+): number | null {
+  const req = requiredPrincipal(targetMonthly, yieldPct);
+  if (initial >= req) return 0;
+  const monthlyRate = yieldPct / 100 / 12;
+  let balance = initial;
+  const maxMonths = 100 * 12;
+  for (let m = 1; m <= maxMonths; m++) {
+    balance += monthlyContribution;
+    balance += balance * monthlyRate; // 배당 재투자
+    if (balance >= req) return m;
+  }
+  return null;
+}
+
 // 월 단위로 시뮬레이션 (납입·배당 주기를 월로 환산해서 처리)
 export function simulateDividend(input: DividendInput): DividendResult {
   const {

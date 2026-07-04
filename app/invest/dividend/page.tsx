@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import DividendCalculator from "./DividendCalculator";
+import TargetDividend from "./TargetDividend";
 
 export const metadata: Metadata = {
   title: "고배당 ETF 배당 계산기 — 배당 재투자 복리",
@@ -23,6 +24,7 @@ export default function DividendPage() {
         </p>
       </div>
       <DividendCalculator />
+      <TargetDividend />
     </div>
   );
 }
