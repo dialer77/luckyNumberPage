@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllDraws } from "@/lib/lotto-data";
 import { ASSETS } from "@/lib/invest-data";
+import { GUIDES } from "@/lib/guides";
 import { SITE } from "@/lib/brand";
 
 // sitemap.xml 을 코드로 자동 생성 → 검색엔진이 모든 페이지를 빠르게 수집.
@@ -22,6 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/calc/compound",
     "/calc/salary",
     "/calc/savings",
+    "/guide",
     "/about",
   ].map((path) => ({
     url: `${BASE_URL}${path}`,
@@ -40,5 +42,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date("2026-07-04"),
   }));
 
-  return [...staticPages, ...drawPages, ...assetPages];
+  // 가이드 글
+  const guidePages = GUIDES.map((g) => ({
+    url: `${BASE_URL}/guide/${g.slug}`,
+    lastModified: new Date(g.updated),
+  }));
+
+  return [...staticPages, ...drawPages, ...assetPages, ...guidePages];
 }

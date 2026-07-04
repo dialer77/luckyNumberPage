@@ -9,6 +9,7 @@ const NAV = [
   { href: "/lotto", label: "🍀 행운노트" },
   { href: "/invest", label: "📈 그때샀으면" },
   { href: "/calc", label: "🧮 머니계산기" },
+  { href: "/guide", label: "📚 가이드" },
 ];
 
 export default function Nav() {
