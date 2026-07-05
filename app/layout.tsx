@@ -33,7 +33,9 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ko" className="h-full">
+    // lang="ko" → 브라우저가 한국어로 감지해 자동번역 제안. 외국인은 번역으로 이용.
+    // suppressHydrationWarning → 크롬 자동번역이 텍스트를 바꿔도 React 오류 완화.
+    <html lang="ko" className="h-full" suppressHydrationWarning>
       {/* AdSense 도메인 연결을 미리 열어 스크립트 로드 지연 완화 (FCP 개선) */}
       <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
       <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
@@ -61,7 +63,7 @@ export default function RootLayout({
           }),
         }}
       />
-      <body className="min-h-full flex flex-col text-slate-800">
+      <body className="min-h-full flex flex-col text-slate-800" suppressHydrationWarning>
         {/* ── 공통 헤더 (상단 고정) ── */}
         <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-white/70 backdrop-blur-md">
           <div className="mx-auto flex max-w-3xl flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
