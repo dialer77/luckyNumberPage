@@ -22,6 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/calc/prize",
     "/calc/compound",
     "/calc/salary",
+    "/calc/take-home",
     "/calc/savings",
     "/guide",
     "/about",

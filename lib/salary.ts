@@ -59,12 +59,15 @@ export type TakeHome = {
   topRate: number; // 적용 세율 구간(과세표준 기준)
 };
 
-export function calcTakeHome(gross: number): TakeHome {
+// monthlyNonTaxable: 월 비과세액(식대 등). 과세·4대보험 산정에서 제외되고
+// 실수령에는 그대로 포함됨. 기본 20만원(대표적 식대 비과세).
+export function calcTakeHome(gross: number, monthlyNonTaxable = 200_000): TakeHome {
   const g = Math.max(0, gross);
-  const insurance = Math.round(g * INSURANCE_RATE);
-  const base = Math.max(0, g - earnedIncomeDeduction(g) - 1_500_000); // 본인 기본공제 150만
+  const taxable = Math.max(0, g - Math.max(0, monthlyNonTaxable) * 12);
+  const insurance = Math.round(taxable * INSURANCE_RATE);
+  const base = Math.max(0, taxable - earnedIncomeDeduction(taxable) - 1_500_000); // 본인 기본공제 150만
   const { tax, rate } = incomeTax(base);
-  const incomeTaxV = Math.round(Math.max(0, tax - taxCredit(tax, g)));
+  const incomeTaxV = Math.round(Math.max(0, tax - taxCredit(tax, taxable)));
   const localTax = Math.round(incomeTaxV * 0.1);
   const net = g - insurance - incomeTaxV - localTax;
   return {

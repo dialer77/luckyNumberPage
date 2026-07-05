@@ -43,6 +43,12 @@ const CALCULATORS = [
     desc: "원금이 복리로 불어나면 얼마?",
   },
   {
+    href: "/calc/take-home",
+    emoji: "💵",
+    title: "연봉 실수령액 계산기",
+    desc: "4대보험·세금 뗀 세후 월급",
+  },
+  {
     href: "/calc/salary",
     emoji: "💼",
     title: "이직 연봉 계산기",
