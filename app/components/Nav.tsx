@@ -16,7 +16,7 @@ export default function Nav() {
   const path = usePathname();
 
   return (
-    <nav className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+    <nav className="no-scrollbar -mx-4 flex flex-nowrap gap-x-4 overflow-x-auto px-4 text-sm sm:mx-0 sm:px-0">
       {NAV.map((item) => {
         const active =
           item.href === "/" ? path === "/" : path.startsWith(item.href);
@@ -25,11 +25,11 @@ export default function Nav() {
             key={item.href}
             href={item.href}
             aria-current={active ? "page" : undefined}
-            className={
+            className={`whitespace-nowrap py-0.5 ${
               active
                 ? "font-semibold text-indigo-600"
                 : "text-slate-600 hover:text-indigo-600"
-            }
+            }`}
           >
             {item.label}
           </Link>

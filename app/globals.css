@@ -37,3 +37,12 @@ body {
 summary::-webkit-details-marker {
   display: none;
 }
+
+/* 스크롤바 숨김 (모바일 가로 스크롤 내비 등) */
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

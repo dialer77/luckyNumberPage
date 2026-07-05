@@ -57,8 +57,8 @@ export default function CompoundCalculator() {
       {/* 회차별 표 */}
       {rows.length > 0 && (
         <div className="mt-4 overflow-hidden rounded-xl ring-1 ring-slate-100">
-          <div className="max-h-80 overflow-y-auto">
-            <table className="w-full text-sm">
+          <div className="max-h-80 overflow-auto">
+            <table className="w-full min-w-[440px] text-sm">
               <thead className="sticky top-0 bg-slate-50 text-xs text-slate-500">
                 <tr>
                   <th className="px-3 py-2 text-left font-medium">회차</th>
