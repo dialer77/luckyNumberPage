@@ -66,6 +66,12 @@ const CALCULATORS = [
     title: "물가 계산기",
     desc: "옛날 돈의 지금 가치 (인플레이션)",
   },
+  {
+    href: "/calc/loan",
+    emoji: "🏦",
+    title: "대출 원리금 계산기",
+    desc: "월 상환액·총 이자·상환 스케줄",
+  },
 ];
 
 export default function CalcHomePage() {
