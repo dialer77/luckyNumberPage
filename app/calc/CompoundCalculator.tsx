@@ -57,27 +57,28 @@ export default function CompoundCalculator() {
       {/* 회차별 표 */}
       {rows.length > 0 && (
         <div className="mt-4 overflow-hidden rounded-xl ring-1 ring-slate-100">
-          <div className="max-h-80 overflow-auto">
-            <table className="w-full min-w-[440px] text-sm">
+          {/* 모바일: 회차·이번 수익·누적 잔액 (세로 스크롤). 데스크톱: 시작대비 수익 추가 */}
+          <div className="max-h-80 overflow-y-auto">
+            <table className="w-full text-sm">
               <thead className="sticky top-0 bg-slate-50 text-xs text-slate-500">
                 <tr>
-                  <th className="px-3 py-2 text-left font-medium">회차</th>
-                  <th className="px-3 py-2 text-right font-medium">이번 회차 수익</th>
-                  <th className="px-3 py-2 text-right font-medium">누적 잔액</th>
-                  <th className="px-3 py-2 text-right font-medium">시작 대비 수익</th>
+                  <th className="px-2 py-2 text-left font-medium sm:px-3">회차</th>
+                  <th className="px-2 py-2 text-right font-medium sm:px-3">이번 회차 수익</th>
+                  <th className="px-2 py-2 text-right font-medium sm:px-3">누적 잔액</th>
+                  <th className="hidden px-3 py-2 text-right font-medium sm:table-cell">시작 대비 수익</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
                 {rows.map((row) => (
                   <tr key={row.k} className="tabular-nums">
-                    <td className="px-3 py-2 text-slate-500">{row.k}회</td>
-                    <td className="px-3 py-2 text-right text-emerald-600">
+                    <td className="px-2 py-2 text-slate-500 sm:px-3">{row.k}회</td>
+                    <td className="px-2 py-2 text-right text-emerald-600 sm:px-3">
                       +{formatKRW(row.interest)}
                     </td>
-                    <td className="px-3 py-2 text-right font-medium text-slate-700">
+                    <td className="px-2 py-2 text-right font-medium text-slate-700 sm:px-3">
                       {formatKRW(row.balance)}
                     </td>
-                    <td className="px-3 py-2 text-right text-indigo-600">
+                    <td className="hidden px-3 py-2 text-right text-indigo-600 sm:table-cell">
                       +{formatKRW(row.profit)}
                     </td>
                   </tr>

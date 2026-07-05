@@ -84,31 +84,32 @@ export default function LoanCalculator() {
       {/* 상환 스케줄 */}
       {res.schedule.length > 0 && (
         <div className="mt-4 overflow-hidden rounded-xl ring-1 ring-slate-100">
-          <div className="max-h-80 overflow-auto">
-            <table className="w-full min-w-[480px] text-sm">
+          {/* 모바일: 회차·상환액·잔액만 (세로 스크롤). 데스크톱: 원금·이자 열 추가 */}
+          <div className="max-h-80 overflow-y-auto">
+            <table className="w-full text-sm">
               <thead className="sticky top-0 bg-slate-50 text-xs text-slate-500">
                 <tr>
-                  <th className="px-3 py-2 text-left font-medium">회차</th>
-                  <th className="px-3 py-2 text-right font-medium">상환액</th>
-                  <th className="px-3 py-2 text-right font-medium">원금</th>
-                  <th className="px-3 py-2 text-right font-medium">이자</th>
-                  <th className="px-3 py-2 text-right font-medium">잔액</th>
+                  <th className="px-2 py-2 text-left font-medium sm:px-3">회차</th>
+                  <th className="px-2 py-2 text-right font-medium sm:px-3">상환액</th>
+                  <th className="hidden px-3 py-2 text-right font-medium sm:table-cell">원금</th>
+                  <th className="hidden px-3 py-2 text-right font-medium sm:table-cell">이자</th>
+                  <th className="px-2 py-2 text-right font-medium sm:px-3">잔액</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 tabular-nums">
                 {res.schedule.map((row) => (
                   <tr key={row.month}>
-                    <td className="px-3 py-2 text-slate-500">{row.month}</td>
-                    <td className="px-3 py-2 text-right font-medium text-slate-700">
+                    <td className="px-2 py-2 text-slate-500 sm:px-3">{row.month}</td>
+                    <td className="px-2 py-2 text-right font-medium text-slate-700 sm:px-3">
                       {formatKRW(row.payment)}
                     </td>
-                    <td className="px-3 py-2 text-right text-indigo-600">
+                    <td className="hidden px-3 py-2 text-right text-indigo-600 sm:table-cell">
                       {formatKRW(row.principal)}
                     </td>
-                    <td className="px-3 py-2 text-right text-rose-500">
+                    <td className="hidden px-3 py-2 text-right text-rose-500 sm:table-cell">
                       {formatKRW(row.interest)}
                     </td>
-                    <td className="px-3 py-2 text-right text-slate-400">
+                    <td className="px-2 py-2 text-right text-slate-400 sm:px-3">
                       {formatKRW(row.balance)}
                     </td>
                   </tr>
