@@ -60,6 +60,12 @@ const CALCULATORS = [
     title: "적금·예금 계산기",
     desc: "세후 만기 수령액 계산",
   },
+  {
+    href: "/calc/inflation",
+    emoji: "🏷️",
+    title: "물가 계산기",
+    desc: "옛날 돈의 지금 가치 (인플레이션)",
+  },
 ];
 
 export default function CalcHomePage() {

@@ -24,6 +24,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/calc/salary",
     "/calc/take-home",
     "/calc/savings",
+    "/calc/inflation",
     "/guide",
     "/about",
   ].map((path) => ({
