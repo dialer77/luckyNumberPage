@@ -72,6 +72,24 @@ const CALCULATORS = [
     title: "대출 원리금 계산기",
     desc: "월 상환액·총 이자·상환 스케줄",
   },
+  {
+    href: "/calc/average",
+    emoji: "📊",
+    title: "평단가·물타기 계산기",
+    desc: "평균 매입가·수익률 계산",
+  },
+  {
+    href: "/calc/severance",
+    emoji: "🧳",
+    title: "퇴직금 계산기",
+    desc: "근속·급여로 예상 퇴직금",
+  },
+  {
+    href: "/calc/salary-rank",
+    emoji: "🏆",
+    title: "내 연봉 상위 몇 %",
+    desc: "대한민국 근로소득 순위 (재미)",
+  },
 ];
 
 export default function CalcHomePage() {
