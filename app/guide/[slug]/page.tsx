@@ -64,11 +64,20 @@ export default async function GuidePage({
             {sec.h && (
               <h2 className="text-lg font-semibold text-slate-800">{sec.h}</h2>
             )}
-            {sec.p.map((para, j) => (
+            {sec.p?.map((para, j) => (
               <p key={j} className="text-sm leading-relaxed text-slate-600">
                 {para}
               </p>
             ))}
+            {sec.list && (
+              <ul className="ml-4 list-disc space-y-1.5 text-sm leading-relaxed text-slate-600 marker:text-indigo-400">
+                {sec.list.map((li, k) => (
+                  <li key={k} className="pl-1">
+                    {li}
+                  </li>
+                ))}
+              </ul>
+            )}
           </section>
         ))}
       </div>
