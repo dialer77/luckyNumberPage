@@ -10,7 +10,24 @@
 // 이 페이지만 Client Component입니다. (필요한 곳만 client로)
 
 import { useState } from "react";
+import Link from "next/link";
 import NumberBall from "../../components/NumberBall";
+import Faq from "../../components/Faq";
+
+const FAQ = [
+  {
+    q: "생성기로 뽑은 번호가 당첨 확률이 더 높나요?",
+    a: "아닙니다. 무작위로 뽑든 직접 고르든, 자동이든 수동이든 어떤 6개 조합의 1등 확률은 정확히 같은 814만 분의 1입니다. 생성기는 번호를 고르는 수고와 고민을 덜어주는 편의 도구일 뿐입니다.",
+  },
+  {
+    q: "번호는 어떻게 뽑히나요?",
+    a: "1부터 45까지 중에서 서로 다른 6개를 무작위로 골라 오름차순으로 정렬해 보여줍니다. 이미 뽑힌 번호는 후보에서 빼기 때문에 한 세트 안에서 중복은 나오지 않습니다.",
+  },
+  {
+    q: "여러 세트를 한꺼번에 뽑을 수 있나요?",
+    a: "버튼을 누를 때마다 새 세트가 위에 쌓입니다. 원하는 만큼 반복해서 뽑아 비교해 보고, '기록 지우기'로 목록을 초기화할 수 있습니다. 뽑은 기록은 이 페이지에서만 임시로 보이며 따로 저장되지 않습니다.",
+  },
+];
 
 // 1~45 중 서로 다른 6개를 무작위로 뽑아 오름차순 정렬해서 반환
 function pickSix(): number[] {
@@ -88,6 +105,38 @@ export default function GeneratorPage() {
           아직 뽑은 번호가 없어요. 버튼을 눌러보세요.
         </p>
       )}
+
+      {/* 설명 문단 — 콘텐츠 보강 + 확률 오해 방지 */}
+      <div className="rounded-2xl bg-white p-5 text-sm leading-relaxed text-slate-600 shadow-sm ring-1 ring-slate-100">
+        <h2 className="text-base font-bold text-slate-800">
+          행운 번호 생성기, 이렇게 쓰세요
+        </h2>
+        <p className="mt-2">
+          매번 번호를 고르기 고민된다면 생성기가 1~45 중 6개를 무작위로 뽑아
+          줍니다. 버튼을 누를 때마다 새 세트가 위에 쌓이니, 여러 조합을 뽑아
+          마음에 드는 걸 고르면 됩니다. 뽑은 기록은 저장되지 않고 화면에서만
+          임시로 보여요.
+        </p>
+        <p className="mt-2">
+          한 가지 기억할 점은, <b>어떤 방식으로 번호를 골라도 당첨 확률은 같다</b>
+          는 것입니다. 자동·수동, 무작위·직접 선택에 관계없이 1등 확률은 814만
+          분의 1로 동일합니다. 그러니 생성기는 &lsquo;더 잘 맞는 번호&rsquo;가
+          아니라 &lsquo;고민을 덜어주는 재미 도구&rsquo;로 즐기면 좋습니다.
+        </p>
+        <p className="mt-2 text-slate-400">
+          확률이 궁금하면{" "}
+          <Link href="/guide/lotto-probability" className="text-indigo-600 hover:underline">
+            로또 확률 가이드
+          </Link>
+          를, 번호별 출현 경향은{" "}
+          <Link href="/stats" className="text-indigo-600 hover:underline">
+            출현 통계
+          </Link>
+          를 참고하세요.
+        </p>
+      </div>
+
+      <Faq items={FAQ} />
     </div>
   );
 }
