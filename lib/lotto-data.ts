@@ -53,6 +53,70 @@ export function drawPrizes(draw: LottoDraw): Record<number, number> {
   };
 }
 
+// ─────────────────────────────────────────────────────────────
+// 회차별 번호 구성 분석 — 6개 당첨번호만으로 계산되는 "그 회차만의" 지표.
+// 로또 커뮤니티에서 실제로 쓰는 홀짝·고저·합계·연속·AC값 등을 산출해,
+// 회차마다 서로 다른 고유 콘텐츠를 만든다. (외부 데이터 불필요)
+// ─────────────────────────────────────────────────────────────
+export type DrawAnalysis = {
+  sum: number; // 당첨번호 6개 합계
+  average: number; // 6개 평균
+  oddCount: number; // 홀수 개수
+  evenCount: number; // 짝수 개수
+  lowCount: number; // 저(1~22) 개수
+  highCount: number; // 고(23~45) 개수
+  min: number;
+  max: number;
+  range: number; // 최고 − 최저
+  consecutivePairs: number; // 연속한 번호 쌍 수 (예: 24·25)
+  acValue: number; // 산술복잡도(AC값) 0~10, 높을수록 번호가 고르게 흩어짐
+  bandCounts: number[]; // 구간별 개수 [1-10,11-20,21-30,31-40,41-45]
+};
+
+/** 이론상 기준값 (참고용). 1~45 균등 추첨 가정. */
+export const DRAW_BASELINE = { sum: 138, oddEven: "3:3", lowHigh: "약 3:3" };
+
+/** 한 회차의 당첨번호 6개를 분석해 지표를 계산 */
+export function analyzeDraw(draw: LottoDraw): DrawAnalysis {
+  const nums = [...draw.numbers].sort((a, b) => a - b);
+  const sum = nums.reduce((s, n) => s + n, 0);
+  const oddCount = nums.filter((n) => n % 2 === 1).length;
+  const lowCount = nums.filter((n) => n <= 22).length;
+
+  let consecutivePairs = 0;
+  for (let i = 0; i < nums.length - 1; i++) {
+    if (nums[i + 1] - nums[i] === 1) consecutivePairs++;
+  }
+
+  // AC값 = (서로 다른 양의 차이 개수) − (개수 − 1). 최댓값 10.
+  const diffs = new Set<number>();
+  for (let i = 0; i < nums.length; i++) {
+    for (let j = i + 1; j < nums.length; j++) diffs.add(nums[j] - nums[i]);
+  }
+  const acValue = diffs.size - (nums.length - 1);
+
+  const bands = [0, 0, 0, 0, 0];
+  for (const n of nums) {
+    const idx = Math.min(Math.floor((n - 1) / 10), 4); // 41~45는 5번째 구간
+    bands[idx]++;
+  }
+
+  return {
+    sum,
+    average: Math.round((sum / nums.length) * 10) / 10,
+    oddCount,
+    evenCount: nums.length - oddCount,
+    lowCount,
+    highCount: nums.length - lowCount,
+    min: nums[0],
+    max: nums[nums.length - 1],
+    range: nums[nums.length - 1] - nums[0],
+    consecutivePairs,
+    acValue,
+    bandCounts: bands,
+  };
+}
+
 /** 모든 회차 (최신순) */
 export function getAllDraws(): LottoDraw[] {
   return DRAWS;
