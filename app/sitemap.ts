@@ -19,6 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/lotto",
     "/lotto/my",
     "/lotto/list",
+    "/lotto/trends",
     "/stats",
     "/ranking",
     "/tools/generator",

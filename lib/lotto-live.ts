@@ -61,6 +61,25 @@ export async function getLiveRecent(n: number): Promise<LottoDraw[]> {
   return real.length > 0 ? real : sampleAll(); // 전부 실패면 예시 전체
 }
 
+// 전 회차 (1 ~ 최신). Upstash에서 mget으로 한 번에(청크로) 끌어옴.
+// 과거 회차는 불변이라 ISR 캐시(하루)와 궁합이 좋음 → 대시보드/통계용.
+// redis 없거나 전부 비면 예시 데이터로 폴백.
+export async function getAllLiveDraws(): Promise<LottoDraw[]> {
+  const latestNo = await getLiveLatestNo();
+  if (!redis) return sampleAll();
+
+  const keys = Array.from({ length: latestNo }, (_, i) => `lotto:${i + 1}`);
+  const CHUNK = 100; // REST URL 길이 보호용 청크
+  const out: LottoDraw[] = [];
+  for (let i = 0; i < keys.length; i += CHUNK) {
+    const slice = keys.slice(i, i + CHUNK);
+    const rows = await redis.mget<LottoDraw[]>(...slice);
+    for (const row of rows) if (row) out.push(row);
+  }
+  out.sort((a, b) => a.drwNo - b.drwNo); // 회차 오름차순
+  return out.length > 0 ? out : sampleAll();
+}
+
 // 번호 출현 통계 (주어진 회차들 기준)
 export function computeFrequency(
   draws: LottoDraw[]

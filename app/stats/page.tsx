@@ -95,7 +95,11 @@ export default async function StatsPage() {
           <Link href="/guide/lotto-probability" className="text-indigo-600 hover:underline">
             &lsquo;로또 1등 확률과 번호 고르기의 진실&rsquo;
           </Link>{" "}
-          가이드에서 다룹니다.
+          가이드에서, 회차별 당첨금·당첨자 흐름은{" "}
+          <Link href="/lotto/trends" className="text-indigo-600 hover:underline">
+            추이 대시보드
+          </Link>
+          에서 확인하세요.
         </p>
       </div>
 

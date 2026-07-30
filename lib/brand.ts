@@ -55,6 +55,7 @@ export const LOTTO_FEATURES = [
   { href: "/lotto/my", emoji: "⭐", title: "내 번호 당첨확인", desc: "저장한 번호를 최신 회차와 자동 대조" },
   { href: "/lotto/list", emoji: "📜", title: "회차별 당첨번호", desc: "역대 회차를 한눈에 조회" },
   { href: "/stats", emoji: "📊", title: "번호 출현 통계", desc: "어떤 번호가 자주 나왔나" },
+  { href: "/lotto/trends", emoji: "📈", title: "회차별 추이 대시보드", desc: "당첨금·당첨자·합계 그래프" },
   { href: "/tools/generator", emoji: "🎲", title: "번호 생성기", desc: "무작위 행운 번호 뽑기" },
   { href: "/tools/challenge", emoji: "🎯", title: "1등 도전 시뮬레이터", desc: "몇 번 만에 1등이 나올까?" },
   { href: "/ranking", emoji: "🏆", title: "오늘의 랭킹", desc: "매일 순이익으로 겨루기" },
