@@ -55,6 +55,75 @@ export function getAsset(key: string): Asset | undefined {
   return ASSETS.find((a) => a.key === key);
 }
 
+// ─────────────────────────────────────────────────────────────
+// 자산별 수익 분석 — 가격 맵만으로 계산되는 "그 자산만의" 지표.
+// 연도별 수익배수·CAGR·최고/최저를 산출해 자산 페이지마다 고유 콘텐츠를 만든다.
+// (page.tsx의 resolved.prices를 넘기면 실시간 시세까지 반영)
+// ─────────────────────────────────────────────────────────────
+export type AssetReturnRow = {
+  year: number;
+  multiple: number; // 지금값 ÷ 그때값
+  valueOf1M: number; // 그때 100만원 → 지금 가치
+  annualized: number; // 연평균 수익률(%) (CAGR)
+};
+export type AssetAnalysis = {
+  currentPrice: number;
+  rows: AssetReturnRow[]; // 과거 연도별
+  best: AssetReturnRow;
+  worst: AssetReturnRow;
+  earliestYear: number;
+  cagrFromEarliest: number; // 최초 연도부터 연평균 수익률(%)
+  highYear: number;
+  highPrice: number;
+  lowYear: number;
+  lowPrice: number;
+};
+
+export function analyzeAsset(prices: Record<number, number>): AssetAnalysis {
+  const now = prices[CURRENT_YEAR];
+  const pastYears = Object.keys(prices)
+    .map(Number)
+    .filter((y) => y < CURRENT_YEAR)
+    .sort((a, b) => a - b);
+
+  const rows: AssetReturnRow[] = pastYears.map((year) => {
+    const multiple = now / prices[year];
+    const years = CURRENT_YEAR - year;
+    const annualized = years > 0 ? (Math.pow(multiple, 1 / years) - 1) * 100 : 0;
+    return {
+      year,
+      multiple,
+      valueOf1M: Math.round(1_000_000 * multiple),
+      annualized,
+    };
+  });
+
+  const best = rows.reduce((a, b) => (b.multiple > a.multiple ? b : a), rows[0]);
+  const worst = rows.reduce((a, b) => (b.multiple < a.multiple ? b : a), rows[0]);
+
+  // 데이터 구간 내 최고/최저 가격 연도
+  const allYears = Object.keys(prices).map(Number);
+  let highYear = allYears[0];
+  let lowYear = allYears[0];
+  for (const y of allYears) {
+    if (prices[y] > prices[highYear]) highYear = y;
+    if (prices[y] < prices[lowYear]) lowYear = y;
+  }
+
+  return {
+    currentPrice: now,
+    rows,
+    best,
+    worst,
+    earliestYear: pastYears[0],
+    cagrFromEarliest: rows[0]?.annualized ?? 0,
+    highYear,
+    highPrice: prices[highYear],
+    lowYear,
+    lowPrice: prices[lowYear],
+  };
+}
+
 export function assetsByCategory(cat: AssetCategory): Asset[] {
   return ASSETS.filter((a) => a.category === cat);
 }
