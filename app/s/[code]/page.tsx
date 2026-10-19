@@ -9,8 +9,8 @@ export async function generateMetadata({
 }: PageProps<"/s/[code]">): Promise<Metadata> {
   const { code } = await params;
   const p = decodeShare(code);
-  if (!p) return { title: "결과를 찾을 수 없음" };
-  return { title: `${p.t} — ${p.v}`, description: p.s };
+  if (!p) return { title: "결과를 찾을 수 없음", robots: { index: false } };
+  return { title: `${p.t} — ${p.v}`, description: p.s, robots: { index: false, follow: true } };
 }
 
 export default async function SharePage({ params }: PageProps<"/s/[code]">) {

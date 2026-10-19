@@ -10,7 +10,7 @@ export async function generateMetadata({
 }: PageProps<"/invest/r/[code]">): Promise<Metadata> {
   const { code } = await params;
   const s = decodeInvestShare(code);
-  if (!s) return { title: "결과를 찾을 수 없음" };
+  if (!s) return { title: "결과를 찾을 수 없음", robots: { index: false } };
   const asset = getAsset(s.assetKey)!;
   const profit = s.nowValue - s.amount;
   return {
@@ -18,6 +18,7 @@ export async function generateMetadata({
     description: `${s.year}년 ${formatKRW(s.amount)} → 지금 ${formatKRW(
       s.nowValue
     )} (순손익 ${formatKRW(profit)})`,
+    robots: { index: false, follow: true },
   };
 }
 
