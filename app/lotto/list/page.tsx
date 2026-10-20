@@ -3,7 +3,8 @@ import Link from "next/link";
 import NumberBall from "../../components/NumberBall";
 import LottoSearch from "../../components/LottoSearch";
 import Faq from "../../components/Faq";
-import { getLiveRecent, getLiveLatestNo } from "@/lib/lotto-live";
+import { getAllLiveDraws } from "@/lib/lotto-live";
+import { formatKRW, type LottoDraw } from "@/lib/lotto-data";
 
 const FAQ = [
   {
@@ -26,19 +27,29 @@ const FAQ = [
 
 // 회차별 당첨번호 목록 (행운노트 대문에서 한 단계 들어온 페이지).
 export const metadata: Metadata = {
-  title: "회차별 당첨번호 조회 — 1회부터 최신회까지",
+  // 서치콘솔(2026-10): 유입 검색어가 전부 "로또 회차별 당첨번호 (전체보기)" 계열
+  title: "로또 회차별 당첨번호 전체보기 — 1회부터 최신회까지 한눈에",
   description:
-    "역대 로또 당첨번호를 회차 번호로 검색해 조회하세요. 1회부터 최신 회차까지 당첨번호·보너스·1등 당첨금과 세후 실수령액을 확인할 수 있습니다.",
+    "로또 1회부터 최신 회차까지 역대 당첨번호 전체를 연도별 표로 한눈에 보세요. 회차 검색, 보너스 번호, 1등 당첨금과 등수별 당첨금까지 확인할 수 있습니다.",
   alternates: { canonical: "/lotto/list" },
 };
 
 export const revalidate = 3600;
 
 export default async function LottoListPage() {
-  const [draws, latestNo] = await Promise.all([
-    getLiveRecent(30),
-    getLiveLatestNo(),
-  ]);
+  // 전 회차를 한 번에 받아 최근 30회 카드 + 연도별 전체 표에 함께 사용
+  const all = await getAllLiveDraws(); // 회차 오름차순
+  const latestNo = all[all.length - 1]?.drwNo ?? 0;
+  const draws = all.slice(-30).reverse();
+
+  // 연도별 묶음 (최신 연도 먼저, 연도 안에서는 최신 회차 먼저)
+  const byYear = new Map<string, LottoDraw[]>();
+  for (const d of [...all].reverse()) {
+    const y = d.drwNoDate.slice(0, 4);
+    if (!byYear.has(y)) byYear.set(y, []);
+    byYear.get(y)!.push(d);
+  }
+  const years = [...byYear.keys()];
 
   return (
     <div className="space-y-6">
@@ -46,7 +57,7 @@ export default async function LottoListPage() {
         <Link href="/lotto" className="text-sm text-indigo-600 hover:underline">
           ← 행운노트
         </Link>
-        <h1 className="mt-2 text-2xl font-bold">회차별 당첨번호</h1>
+        <h1 className="mt-2 text-2xl font-bold">로또 회차별 당첨번호 전체보기</h1>
         <p className="mt-1 text-sm text-slate-500">
           1회부터 최신 {latestNo}회까지 조회할 수 있어요. 아래에서 회차 번호로
           바로 찾거나, 최신 회차부터 훑어보세요.
@@ -84,6 +95,61 @@ export default async function LottoListPage() {
           </li>
         ))}
       </ul>
+
+      {/* 전 회차 표 — "회차별 당첨번호 전체보기" 검색 의도에 직접 대응.
+          연도별 접기(최신 연도만 펼침)로 모바일에서도 길지 않게. */}
+      <section className="space-y-2">
+        <h2 className="text-sm font-semibold text-slate-700">
+          전체 회차 당첨번호 (1회 ~ {latestNo}회, 연도별)
+        </h2>
+        {years.map((y, i) => {
+          const rows = byYear.get(y)!;
+          return (
+            <details
+              key={y}
+              open={i === 0}
+              className="rounded-xl bg-white shadow-sm ring-1 ring-slate-100"
+            >
+              <summary className="cursor-pointer px-4 py-3 text-sm font-semibold">
+                {y}년{" "}
+                <span className="font-normal text-slate-400">
+                  ({rows[rows.length - 1].drwNo}회 ~ {rows[0].drwNo}회)
+                </span>
+              </summary>
+              <table className="w-full border-t border-slate-100 text-sm">
+                <thead>
+                  <tr className="text-left text-xs text-slate-400">
+                    <th className="px-4 py-1.5 font-normal">회차</th>
+                    <th className="py-1.5 font-normal">당첨번호 + 보너스</th>
+                    <th className="hidden py-1.5 pr-4 text-right font-normal sm:table-cell">
+                      1등 당첨금
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((d) => (
+                    <tr key={d.drwNo} className="border-t border-slate-50">
+                      <td className="px-4 py-1.5 whitespace-nowrap">
+                        <Link href={`/lotto/${d.drwNo}`} className="font-medium text-indigo-600 hover:underline">
+                          {d.drwNo}회
+                        </Link>
+                        <div className="text-xs text-slate-400">{d.drwNoDate.slice(5)}</div>
+                      </td>
+                      <td className="py-1.5 tabular-nums">
+                        {d.numbers.join(" · ")}{" "}
+                        <span className="text-slate-400">+ {d.bonus}</span>
+                      </td>
+                      <td className="hidden py-1.5 pr-4 text-right text-slate-500 sm:table-cell">
+                        {d.firstWinAmount ? formatKRW(d.firstWinAmount) : "-"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </details>
+          );
+        })}
+      </section>
 
       {/* 안내 문단 — 콘텐츠 보강 + 내부 링크 */}
       <div className="rounded-2xl bg-white p-5 text-sm leading-relaxed text-slate-600 shadow-sm ring-1 ring-slate-100">
