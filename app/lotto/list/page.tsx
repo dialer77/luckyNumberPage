@@ -5,6 +5,7 @@ import LottoSearch from "../../components/LottoSearch";
 import Faq from "../../components/Faq";
 import { getAllLiveDraws } from "@/lib/lotto-live";
 import { formatKRW, type LottoDraw } from "@/lib/lotto-data";
+import { SITE } from "@/lib/brand";
 
 const FAQ = [
   {
@@ -40,6 +41,7 @@ export default async function LottoListPage() {
   // 전 회차를 한 번에 받아 최근 30회 카드 + 연도별 전체 표에 함께 사용
   const all = await getAllLiveDraws(); // 회차 오름차순
   const latestNo = all[all.length - 1]?.drwNo ?? 0;
+  const latestDate = all[all.length - 1]?.drwNoDate ?? "";
   const draws = all.slice(-30).reverse();
 
   // 연도별 묶음 (최신 연도 먼저, 연도 안에서는 최신 회차 먼저)
@@ -53,6 +55,20 @@ export default async function LottoListPage() {
 
   return (
     <div className="space-y-6">
+      {/* 구조화 데이터: 경로(빵부스러기) → 검색결과 계층 표시 */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "행운노트", item: `${SITE.url}/lotto` },
+              { "@type": "ListItem", position: 2, name: "회차별 당첨번호", item: `${SITE.url}/lotto/list` },
+            ],
+          }),
+        }}
+      />
       <div>
         <Link href="/lotto" className="text-sm text-indigo-600 hover:underline">
           ← 행운노트
@@ -62,6 +78,12 @@ export default async function LottoListPage() {
           1회부터 최신 {latestNo}회까지 조회할 수 있어요. 아래에서 회차 번호로
           바로 찾거나, 최신 회차부터 훑어보세요.
         </p>
+        {latestDate && (
+          <p className="mt-1 text-xs text-slate-400">
+            최근 업데이트: 제 {latestNo}회({latestDate} 추첨) 결과까지 반영 · 매주
+            추첨 다음 날 자동 갱신
+          </p>
+        )}
       </div>
 
       {/* 회차 검색 */}
