@@ -15,6 +15,7 @@ import {
 import { redis } from "@/lib/redis";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/ranking" },
   title: "오늘의 랭킹",
   description:
     "매일 열리는 1등 도전 챌린지 랭킹. 순이익으로 겨루고 명예의 전당에 이름을 남겨보세요.",

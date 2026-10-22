@@ -12,7 +12,7 @@ import {
   drawPrizes,
   DRAW_BASELINE,
 } from "@/lib/lotto-data";
-import { getLiveDraw } from "@/lib/lotto-live";
+import { getLiveDraw, getLiveLatestNo } from "@/lib/lotto-live";
 import { SITE } from "@/lib/brand";
 
 // ─────────────────────────────────────────────────────────────
@@ -53,7 +53,10 @@ export default async function DrawDetailPage({
   params,
 }: PageProps<"/lotto/[drwNo]">) {
   const { drwNo } = await params;
-  const draw = await getLiveDraw(Number(drwNo));
+  const [draw, latestNo] = await Promise.all([
+    getLiveDraw(Number(drwNo)),
+    getLiveLatestNo(),
+  ]);
 
   // 없는 회차면 404 페이지로
   if (!draw) notFound();
@@ -82,9 +85,10 @@ export default async function DrawDetailPage({
             "@type": "BreadcrumbList",
             itemListElement: [
               { "@type": "ListItem", position: 1, name: "행운노트", item: `${SITE.url}/lotto` },
+              { "@type": "ListItem", position: 2, name: "회차별 당첨번호", item: `${SITE.url}/lotto/list` },
               {
                 "@type": "ListItem",
-                position: 2,
+                position: 3,
                 name: `${draw.drwNo}회 당첨번호`,
                 item: `${SITE.url}/lotto/${draw.drwNo}`,
               },
@@ -93,8 +97,8 @@ export default async function DrawDetailPage({
         }}
       />
 
-      <Link href="/lotto" className="text-sm text-indigo-600 hover:underline">
-        ← 회차 목록으로
+      <Link href="/lotto/list" className="text-sm text-indigo-600 hover:underline">
+        ← 회차별 당첨번호 전체보기
       </Link>
 
       <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
@@ -277,6 +281,28 @@ export default async function DrawDetailPage({
 
       {/* 재미(공유) 요소: 세후 실수령액이면 뭘 살 수 있나 */}
       <WhatCanYouBuy amount={afterTax(draw.firstWinAmount)} />
+
+      {/* 이전·다음 회차 — 사이트맵에 없는 과거 회차도 링크를 따라 수집되도록 */}
+      <nav className="flex items-center justify-between gap-2 text-sm">
+        {draw.drwNo > 1 ? (
+          <Link
+            href={`/lotto/${draw.drwNo - 1}`}
+            className="rounded-lg bg-white px-4 py-2 shadow-sm ring-1 ring-slate-100 hover:ring-indigo-200"
+          >
+            ← {draw.drwNo - 1}회 당첨번호
+          </Link>
+        ) : (
+          <span />
+        )}
+        {draw.drwNo < latestNo && (
+          <Link
+            href={`/lotto/${draw.drwNo + 1}`}
+            className="rounded-lg bg-white px-4 py-2 shadow-sm ring-1 ring-slate-100 hover:ring-indigo-200"
+          >
+            {draw.drwNo + 1}회 당첨번호 →
+          </Link>
+        )}
+      </nav>
 
       {/* 다른 엔진으로 유도 (클릭 도미노) */}
       <p className="text-sm text-slate-500">

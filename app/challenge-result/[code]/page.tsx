@@ -26,11 +26,12 @@ export async function generateMetadata({
 }: PageProps<"/challenge-result/[code]">): Promise<Metadata> {
   const { code } = await params;
   const r = decodeRun(code);
-  if (!r) return { title: "결과를 찾을 수 없음" };
+  if (!r) return { title: "결과를 찾을 수 없음", robots: { index: false } };
   const net = r.winnings - r.spent;
   return {
     title: `${r.tries.toLocaleString()}번 도전 결과`,
     description: `최고 ${rankName(r.bestRank)} · 순이익 ${formatKRW(net)}`,
+    robots: { index: false, follow: true },
   };
 }
 
