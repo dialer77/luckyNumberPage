@@ -195,7 +195,11 @@ export default async function LottoListPage() {
           <Link href="/guide/lotto-tax" className="text-indigo-600 hover:underline">
             로또 세금 가이드
           </Link>
-          를 참고하세요.
+          를 참고하세요. 지난 복권을 확인하는 방법은{" "}
+          <Link href="/guide/how-to-check-lotto-numbers" className="text-indigo-600 hover:underline">
+            당첨번호 확인 방법 가이드
+          </Link>
+          에 정리해 두었습니다.
         </p>
       </div>
 
