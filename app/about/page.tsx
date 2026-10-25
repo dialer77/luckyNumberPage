@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SITE, SUB_BRANDS } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "사이트 소개",
-  description: `${SITE.name}가 어떤 서비스인지 소개합니다.`,
+  description: `${SITE.name}(manyage.com)의 서비스 구성, 운영자, 데이터 출처와 콘텐츠 원칙을 소개합니다.`,
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {
@@ -41,6 +43,58 @@ export default function AboutPage() {
               </div>
             </li>
           ))}
+        </ul>
+      </section>
+
+      <section className="space-y-2">
+        <h2 className="text-lg font-semibold">운영자</h2>
+        <p className="text-slate-600 leading-relaxed">
+          {SITE.name}는 1인 개발자가 직접 기획·
+          개발·운영합니다. 기능과 글은 모두 직접 계산식을 검증해 작성하며,
+          오류를 발견하시면{" "}
+          <Link href="/contact" className="text-indigo-600 hover:underline">
+            문의 페이지
+          </Link>
+          로 알려 주세요. 확인 즉시 바로잡습니다.
+        </p>
+      </section>
+
+      <section className="space-y-2">
+        <h2 className="text-lg font-semibold">데이터 출처와 갱신 주기</h2>
+        <ul className="list-disc space-y-1 pl-5 text-slate-600 leading-relaxed">
+          <li>
+            <strong>로또 당첨번호·당첨금</strong>: 동행복권이 공개한 회차별
+            결과를 자체 DB에 저장하고, 매주 토요일 추첨 다음 날 아침 자동으로 갱신합니다.
+            통계·추이 그래프는 이 DB의 전 회차 데이터로 계산합니다.
+          </li>
+          <li>
+            <strong>주식·코인 시세</strong>: Twelve Data, CoinGecko 등 공개
+            시세 데이터의 과거 종가를 사용합니다.
+          </li>
+          <li>
+            <strong>세금·급여 계산</strong>: 소득세법·4대 보험 요율 등 공개된
+            기준을 반영하며, 기준이 바뀌면 계산식과 가이드를 함께 수정합니다.
+          </li>
+        </ul>
+      </section>
+
+      <section className="space-y-2">
+        <h2 className="text-lg font-semibold">콘텐츠 원칙</h2>
+        <ul className="list-disc space-y-1 pl-5 text-slate-600 leading-relaxed">
+          <li>
+            &lsquo;당첨 확률을 높이는 번호&rsquo;처럼 근거 없는 주장을 하지
+            않습니다. 로또는 매 회차 독립 시행이며, 통계는 재미와 이해를 위한
+            자료입니다.
+          </li>
+          <li>
+            복권은 여윳돈으로 소액만 즐기도록 안내하며, 과도한 구매를 권하지
+            않습니다. 도박 문제로 어려움을 겪고 있다면 한국도박문제예방치유원
+            (국번 없이 1336)에서 상담받을 수 있습니다.
+          </li>
+          <li>
+            모든 계산 결과는 참고용이며, 중요한 금융 결정은 공식 기관이나
+            전문가와 상의하시기 바랍니다.
+          </li>
         </ul>
       </section>
 

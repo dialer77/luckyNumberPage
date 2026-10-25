@@ -21,6 +21,28 @@ const WEEK = 7 * 24 * 3600 * 1000;
 const RECENT_DRAWS_IN_SITEMAP = 120; // 약 2년치
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // 최신 회차 번호는 Upstash에서, 실패하면 날짜로 추정해 폴백.
+  let latestNo: number;
+  try {
+    latestNo = await getLiveLatestNo();
+  } catch {
+    latestNo = Math.floor((Date.now() - ROUND1_UTC) / WEEK); // 보수적 추정
+  }
+  const latestDrawDate = new Date(ROUND1_UTC + (latestNo - 1) * WEEK);
+
+  // 내용이 바뀌는 페이지는 실제 갱신일을 알려 재크롤링을 유도.
+  // 회차 데이터로 그려지는 페이지 = 최신 추첨일, 신뢰 페이지 = 개정일.
+  const STATIC_UPDATED: Record<string, Date> = {
+    "/lotto": latestDrawDate,
+    "/lotto/list": latestDrawDate,
+    "/lotto/trends": latestDrawDate,
+    "/stats": latestDrawDate,
+    "/about": new Date("2026-10-19"),
+    "/contact": new Date("2026-10-19"),
+    "/privacy": new Date("2026-10-19"),
+    "/terms": new Date("2026-10-19"),
+  };
+
   const staticPages = [
     "",
     "/lotto",
@@ -51,17 +73,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/terms",
   ].map((path) => ({
     url: `${BASE_URL}${path}`,
-    lastModified: new Date("2026-07-17"),
+    lastModified: STATIC_UPDATED[path] ?? new Date("2026-07-17"),
   }));
 
   // 회차별 상세 페이지 — 최근 N회만 sitemap에 노출(크롤링 예산 집중).
-  // 최신 회차 번호는 Upstash에서, 실패하면 날짜로 추정해 폴백.
-  let latestNo: number;
-  try {
-    latestNo = await getLiveLatestNo();
-  } catch {
-    latestNo = Math.floor((Date.now() - ROUND1_UTC) / WEEK); // 보수적 추정
-  }
   const firstDraw = Math.max(1, latestNo - RECENT_DRAWS_IN_SITEMAP + 1);
   const drawPages = Array.from(
     { length: latestNo - firstDraw + 1 },
