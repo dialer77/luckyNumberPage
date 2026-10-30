@@ -94,6 +94,12 @@ export default function RootLayout({
               <Link href="/terms" className="hover:text-indigo-600">이용약관</Link>
               <Link href="/contact" className="hover:text-indigo-600">문의</Link>
             </div>
+            {/* 검색 유입 1위 페이지로 가는 사이트 전역 링크 */}
+            <div className="flex flex-wrap gap-x-4 gap-y-1">
+              <Link href="/lotto/list" className="hover:text-indigo-600">회차별 당첨번호 전체보기</Link>
+              <Link href="/stats" className="hover:text-indigo-600">번호 출현 통계</Link>
+              <Link href="/guide" className="hover:text-indigo-600">가이드</Link>
+            </div>
             <p className="text-xs leading-relaxed text-slate-400">
               {SITE.name}는 공개된 데이터를 정리해 &lsquo;만약에 얼마?&rsquo;를
               재미로 보여주는 정보 서비스입니다. 로또·복권 관련 정보는 구매를
