@@ -24,8 +24,9 @@ const FAQ = [
 ];
 
 export const metadata: Metadata = {
-  title: "번호 출현 통계",
-  description: "최근 회차에서 각 번호가 몇 번 나왔는지 집계한 통계입니다.",
+  title: "로또 번호별 출현 횟수 통계 — 최근 50회 많이 나온 번호",
+  description:
+    "로또 1~45번 각 번호가 최근 50회 동안 당첨번호로 몇 번 나왔는지 많이 나온 순으로 정리했습니다. 매주 추첨 후 자동 갱신되며, 통계를 볼 때 알아둘 확률의 원리도 함께 안내합니다.",
   alternates: { canonical: "/stats" },
 };
 
@@ -40,7 +41,7 @@ export default async function StatsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">번호 출현 통계</h1>
+        <h1 className="text-2xl font-bold">로또 번호별 출현 통계</h1>
         <p className="mt-1 text-sm text-slate-500">
           최근 {totalDraws}개 회차 기준, 많이 나온 번호 순으로 정렬했습니다.
           각 추첨은 서로 독립적이므로 참고용으로 확인하세요.
