@@ -16,9 +16,9 @@ import { redis } from "@/lib/redis";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/ranking" },
-  title: "오늘의 랭킹",
+  title: "오늘의 랭킹 — 로또 1,000게임 모의 도전 기록",
   description:
-    "매일 열리는 1등 도전 챌린지 랭킹. 순이익으로 겨루고 명예의 전당에 이름을 남겨보세요.",
+    "최신 회차 당첨번호를 목표로 가상의 1,000게임을 자동으로 돌려 본 모의 실험 기록입니다. 실제 돈은 오가지 않으며, 대부분 손실로 끝나는 결과로 로또의 기대값을 체감해 보세요.",
 };
 
 // 쿠키/랭킹을 요청 시점에 읽으므로 동적 렌더링
@@ -39,7 +39,14 @@ export default async function RankingPage() {
         <h1 className="text-2xl font-bold">🏆 오늘의 랭킹</h1>
         <p className="mt-1 text-sm text-slate-500">
           제 {target.drwNo}회 당첨번호를 목표로, 서버가 {TRIES_PER_DAY.toLocaleString()}번
-          자동 도전해 순이익으로 겨룹니다. 매일 0시(KST)에 새로 시작해요.
+          자동 도전한 모의 결과를 모은 기록판입니다. 매일 0시(KST)에 새로 시작해요.
+        </p>
+        <p className="mt-2 rounded-lg bg-slate-50 p-3 text-xs leading-relaxed text-slate-500 ring-1 ring-slate-100">
+          모든 도전은 가상 시뮬레이션이며 실제 돈을 걸거나 상품을 주지
+          않습니다. 1,000게임이면 구매액은 {formatKRW(TRIES_PER_DAY * 1000)}이지만,
+          로또는 판매액의 약 50%만 당첨금으로 돌려주기 때문에 평균적으로는
+          절반가량을 잃는 구조입니다. 랭킹 상위권은 운이 좋았던 드문
+          결과일 뿐, 순위가 아래로 갈수록 실제 로또의 평균적인 모습에 가깝습니다.
         </p>
       </div>
 
@@ -57,7 +64,7 @@ export default async function RankingPage() {
       {/* 오늘의 랭킹 */}
       <section>
         <h2 className="mb-2 text-sm font-semibold text-slate-500">
-          오늘의 순이익 랭킹 TOP 20
+          오늘의 모의 순이익 TOP 20
         </h2>
         <Board rows={today} emptyText="아직 참가자가 없어요. 첫 도전자가 되어보세요!" />
       </section>
@@ -65,7 +72,7 @@ export default async function RankingPage() {
       {/* 명예의 전당 */}
       <section>
         <h2 className="mb-2 text-sm font-semibold text-slate-500">
-          👑 명예의 전당 (역대 최고 순이익)
+          👑 명예의 전당 (역대 최고 모의 순이익)
         </h2>
         <Board rows={hof} showDate emptyText="아직 기록이 없어요." />
       </section>
@@ -76,6 +83,15 @@ export default async function RankingPage() {
       >
         ← 혼자서 자유롭게 도전하기 (연습 모드)
       </Link>
+
+      <p className="text-sm text-slate-500">
+        👉 왜 대부분 손해로 끝나는지 궁금하다면{" "}
+        <Link href="/guide/lotto-probability" className="text-indigo-600 hover:underline">
+          로또 1등 확률과 번호 고르기의 진실
+        </Link>
+        을 읽어 보세요. 복권은 여윳돈으로 소액만 즐기시고, 도박 문제로 어려움이
+        있다면 한국도박문제예방치유원(국번 없이 1336)에서 상담받을 수 있습니다.
+      </p>
     </div>
   );
 }
