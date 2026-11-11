@@ -11,7 +11,7 @@ const FAQ = [
   },
   {
     q: "출현 통계는 몇 회차 기준인가요?",
-    a: "이 페이지는 최근 회차 구간을 기준으로 각 번호(1~45)가 당첨번호로 몇 번 나왔는지 집계합니다. 표본 구간이 짧으면 편차가 커 보일 수 있으니, 특정 번호가 많거나 적게 나온 것도 우연일 가능성이 큽니다.",
+    a: "이 페이지는 가장 최근 50개 회차를 기준으로 각 번호(1~45)가 당첨번호로 몇 번 나왔는지 집계하며, 새 회차가 추가되면 가장 오래된 회차가 빠집니다. 표본 구간이 짧으면 편차가 커 보일 수 있으니, 특정 번호가 많거나 적게 나온 것도 우연일 가능성이 큽니다. 1회부터의 전 회차 흐름은 회차별 추이 대시보드에서 볼 수 있습니다.",
   },
   {
     q: "'뜨거운 번호'와 '차가운 번호'가 뭔가요?",
@@ -37,6 +37,19 @@ export default async function StatsPage() {
   const freq = computeFrequency(draws);
   const totalDraws = draws.length;
   const maxCount = Math.max(...freq.map((f) => f.count), 1); // 막대 비율 계산용
+
+  // 읽는 법 섹션용: 번호당 평균 출현 횟수와 최다·최소 번호(동률이면 모두 표시)
+  const expected = ((totalDraws * 6) / 45).toFixed(1);
+  const top = freq[0];
+  const bottom = freq[freq.length - 1];
+  const numsWith = (count: number) =>
+    freq
+      .filter((f) => f.count === count)
+      .map((f) => f.number)
+      .sort((a, b) => a - b)
+      .join("·");
+  const topNums = numsWith(top.count);
+  const bottomNums = numsWith(bottom.count);
 
   return (
     <div className="space-y-6">
@@ -69,27 +82,53 @@ export default async function StatsPage() {
         ))}
       </ul>
 
-      {/* 통계 읽는 법 — 콘텐츠 보강 + 확률 오해 방지 */}
-      <div className="rounded-2xl bg-white p-5 text-sm leading-relaxed text-slate-600 shadow-sm ring-1 ring-slate-100">
+      {/* 통계 읽는 법과 한계 — 콘텐츠 보강 + 확률 오해 방지 */}
+      <section className="rounded-2xl bg-white p-5 text-sm leading-relaxed text-slate-600 shadow-sm ring-1 ring-slate-100">
         <h2 className="text-base font-bold text-slate-800">
-          번호 출현 통계, 어떻게 읽어야 할까
+          이 통계를 읽는 법과 한계
         </h2>
         <p className="mt-2">
-          위 표는 최근 {totalDraws}개 회차에서 각 번호가 당첨번호로 몇 번 나왔는지
-          집계한 것입니다. 막대가 길수록 해당 구간에서 자주 나온 번호예요. 다만
-          가장 중요한 전제는 <b>로또의 매 추첨은 서로 완전히 독립적</b>이라는
-          점입니다. 지난주에 많이 나온 번호라고 해서 이번 주에 더 잘 나오는 것은
-          아닙니다.
+          위 표는 최근 {totalDraws}개 회차의 당첨번호 6개(보너스 번호 제외)를
+          번호별로 센 것입니다. 모두 {(totalDraws * 6).toLocaleString()}개 번호가
+          나왔으니 번호 하나당 평균은 약 {expected}회이고, 이번 집계에서 가장 많이
+          나온 번호는 {topNums}번({top.count}회), 가장 적게 나온 번호는{" "}
+          {bottomNums}번({bottom.count}회)입니다.
         </p>
         <p className="mt-2">
-          그래서 이 통계는 &lsquo;미래를 맞히는 도구&rsquo;가 아니라, 지금까지의
-          경향을 재미로 살펴보는 <b>참고 자료</b>로 보는 것이 맞습니다. 표본이 짧은
-          구간에서는 번호 간 출현 횟수 차이가 커 보여도 대부분 우연의 범위 안에
-          있습니다. 번호를 고를 때는 통계에 의존하기보다, 좋아하는 숫자나{" "}
+          이 정도 차이는 무작위 추첨에서 자연스럽게 생깁니다.
+          {totalDraws === 50 && (
+            <>
+              {" "}
+              컴퓨터로 공정한 추첨 50회를 5만 번 반복해 보면, 가장 많이 나온 번호는
+              보통 11~15회, 가장 적게 나온 번호는 1~3회였습니다.
+            </>
+          )}{" "}
+          {totalDraws}회는 표본이 작아 몇 주만 지나도 순위가 크게 바뀌고, 전
+          회차로 넓혀 봐도 번호별 차이는 우연의 범위 안에 있습니다(
+          <Link href="/guide/lotto-number-frequency-test" className="text-indigo-600 hover:underline">
+            자주 나온 번호를 고르면 유리할까? 직접 검증
+          </Link>
+          ).
+        </p>
+        <p className="mt-2">
+          가장 중요한 전제는 <b>매 추첨이 서로 독립적</b>이라는 점입니다. 많이 나온
+          번호가 다음에 더 잘 나오지도, 덜 나온 번호가 &lsquo;나올 때가 된&rsquo;
+          것도 아닙니다. 그래서 이 표는 다음 회차 예측에 쓸 수 없고, 어떤 조합이든
+          1등 확률은 8,145,060분의 1로 같습니다. 홀짝·합계처럼 &lsquo;자주 나오는
+          모양&rsquo;도 마찬가지입니다(
+          <Link href="/guide/lotto-odd-even-sum-distribution" className="text-indigo-600 hover:underline">
+            홀짝·합계 분포 분석
+          </Link>
+          ).
+        </p>
+        <p className="mt-2">
+          이 통계는 지난 결과를 기록한 참고 자료일 뿐, 복권 구매를 권하지
+          않습니다. 번호는 좋아하는 숫자나{" "}
           <Link href="/tools/generator" className="text-indigo-600 hover:underline">
             무작위 생성기
           </Link>
-          를 활용하는 편이 마음 편합니다.
+          로 고르고, 복권은 여윳돈으로 소액만 즐기세요. 도박 문제로 어려움이
+          있다면 한국도박문제예방치유원(국번 없이 1336)에서 상담받을 수 있습니다.
         </p>
         <p className="mt-2 text-slate-400">
           확률에 대한 더 자세한 이야기는{" "}
@@ -102,7 +141,7 @@ export default async function StatsPage() {
           </Link>
           에서 확인하세요.
         </p>
-      </div>
+      </section>
 
       <Faq items={FAQ} />
     </div>

@@ -29,6 +29,8 @@ export default function SalaryCalculator() {
   sumCurrent = Math.round(sumCurrent);
   sumNext = Math.round(sumNext);
   const diff = sumNext - sumCurrent;
+  // 이직 후 연봉이 더 낮으면 formatKRW가 "-"를 붙이므로 "+"는 0 이상일 때만
+  const signed = (n: number) => `${n >= 0 ? "+" : ""}${formatKRW(n)}`;
 
   return (
     <Card
@@ -88,7 +90,11 @@ export default function SalaryCalculator() {
         <div className="grid grid-cols-3 gap-3">
           <Stat label="현재직 누적" value={formatKRW(sumCurrent)} />
           <Stat label="이직 누적" value={formatKRW(sumNext)} accent="gain" />
-          <Stat label="누적 차이" value={`+${formatKRW(diff)}`} accent="gain" />
+          <Stat
+            label="누적 차이"
+            value={signed(diff)}
+            accent={diff >= 0 ? "gain" : "loss"}
+          />
         </div>
       </div>
 
@@ -97,8 +103,8 @@ export default function SalaryCalculator() {
           payload={{
             e: "💼",
             t: "이직 연봉 계산",
-            v: `월 실수령 +${formatKRW(monthlyNetDiff)}`,
-            s: `${years}년 누적 +${formatKRW(diff)}`,
+            v: `월 실수령 ${signed(monthlyNetDiff)}`,
+            s: `${years}년 누적 ${signed(diff)}`,
           }}
         />
       </div>

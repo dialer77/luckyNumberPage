@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import TrendChart, { type TrendPoint } from "./TrendChart";
 import Faq from "../../components/Faq";
-import { getAllLiveDraws } from "@/lib/lotto-live";
+import { getAllLiveDraws, computeFrequency } from "@/lib/lotto-live";
 import { formatKRW, DRAW_BASELINE } from "@/lib/lotto-data";
 import { SITE } from "@/lib/brand";
 
@@ -60,6 +60,20 @@ export default async function TrendsPage() {
     Math.round((winnerPts.reduce((s, p) => s + p.value, 0) / (total || 1)) * 10) / 10;
   const maxPrize = prizePts.reduce((a, b) => (b.value > a.value ? b : a), prizePts[0]);
   const maxWinner = winnerPts.reduce((a, b) => (b.value > a.value ? b : a), winnerPts[0]);
+
+  // 읽는 법 섹션용: 전 회차 번호별 출현 횟수(보너스 제외), 최다·최소 번호(동률이면 모두 표시)
+  const freq = computeFrequency(draws);
+  const expectedPerNumber = ((total * 6) / 45).toFixed(1);
+  const top = freq[0];
+  const bottom = freq[freq.length - 1];
+  const numsWith = (count: number) =>
+    freq
+      .filter((f) => f.count === count)
+      .map((f) => f.number)
+      .sort((a, b) => a - b)
+      .join("·");
+  const topNums = numsWith(top.count);
+  const bottomNums = numsWith(bottom.count);
 
   return (
     <div className="space-y-6">
@@ -166,24 +180,59 @@ export default async function TrendsPage() {
         </div>
       </section>
 
-      {/* 해설 */}
-      <div className="rounded-2xl bg-white p-5 text-sm leading-relaxed text-slate-600 shadow-sm ring-1 ring-slate-100">
-        <h2 className="text-base font-bold text-slate-800">이 데이터를 읽는 법</h2>
+      {/* 해설: 읽는 법과 한계 */}
+      <section className="rounded-2xl bg-white p-5 text-sm leading-relaxed text-slate-600 shadow-sm ring-1 ring-slate-100">
+        <h2 className="text-base font-bold text-slate-800">이 통계를 읽는 법과 한계</h2>
         <p className="mt-2">
-          1등 당첨금은 &lsquo;정해진 상금&rsquo;이 아니라 그 회차 판매액과 당첨자
-          수로 결정됩니다. 그래서 당첨금 그래프의 큰 봉우리는 대개 이월(당첨자
-          0)이 있었거나 판매가 많고 당첨자가 적었던 회차입니다. 당첨자 수
-          그래프와 함께 보면, 당첨자가 적은 회차에서 당첨금이 치솟는 반대 관계가
-          보입니다.
+          위 그래프와 숫자는 제1회(2002년 12월 7일)부터 저장된 전 회차{" "}
+          {total.toLocaleString()}회를 기준으로 합니다. 1등 당첨금은 &lsquo;정해진
+          상금&rsquo;이 아니라 그 회차 판매액과 당첨자 수로 결정되므로, 큰 봉우리는
+          대개 이월(당첨자 0)이 있었거나 당첨자가 적었던 회차입니다. 당첨자 수가
+          갈수록 늘어나는 흐름은 판매량이 늘어난 결과입니다(
+          <Link href="/guide/lotto-most-winners-draws" className="text-indigo-600 hover:underline">
+            1등이 63명 나온 회차
+          </Link>
+          ).
         </p>
         <p className="mt-2">
-          당첨번호 합계는 이론상 평균 {DRAW_BASELINE.sum}을 중심으로 흩어집니다.
-          특정 합계 구간이 &lsquo;유리하다&rsquo;는 뜻은 아니며, 각 추첨은 서로
-          독립적이라 과거 추이로 미래를 예측할 수는 없습니다. 자세한 확률 이야기는{" "}
+          초기(2002~2004년)는 1게임 가격이 2,000원이었고(2004년 8월부터 1,000원)
+          이월도 잦아 당첨금이 지금보다 훨씬 컸습니다. 위의 평균 1등 당첨금도 이
+          시기의 큰 금액에 끌려 올라가 있어 요즘 회차의 보통 수준보다 높고, 모든
+          금액은 물가를 반영하지 않은 명목 금액입니다(
+          <Link href="/guide/lotto-biggest-smallest-jackpots" className="text-indigo-600 hover:underline">
+            1등 당첨금 최고·최저 TOP 10
+          </Link>
+          ,{" "}
+          <Link href="/guide/lotto-jackpot-real-value" className="text-indigo-600 hover:underline">
+            물가 반영 1등 가치
+          </Link>
+          ).
+        </p>
+        <p className="mt-2">
+          번호별로 보면 전 회차에서 가장 많이 나온 번호는 {topNums}번({top.count}회),
+          가장 적게 나온 번호는 {bottomNums}번({bottom.count}회)이고, 공정한
+          추첨이라면 번호 하나당 평균은 약 {expectedPerNumber}회입니다. 이 정도
+          차이는 무작위 추첨에서 자연스럽게 생기는 수준입니다(
+          <Link href="/guide/lotto-number-frequency-test" className="text-indigo-600 hover:underline">
+            번호 출현 횟수 검증
+          </Link>
+          ). 당첨번호 합계가 이론상 평균 {DRAW_BASELINE.sum} 근처에 몰리는 것도
+          그 구간에 조합이 많기 때문이지, 특정 합계나 홀짝 비율이 유리해서가
+          아닙니다(
+          <Link href="/guide/lotto-odd-even-sum-distribution" className="text-indigo-600 hover:underline">
+            홀짝·합계 분포
+          </Link>
+          ).
+        </p>
+        <p className="mt-2">
+          각 추첨은 서로 독립적이라 과거 추이로 다음 회차를 예측할 수 없습니다(
           <Link href="/guide/lotto-probability" className="text-indigo-600 hover:underline">
             로또 확률 가이드
           </Link>
-          에서 다룹니다.
+          ). 이 대시보드는 지난 기록을 보여줄 뿐 복권 구매를 권하지 않으며, 복권은
+          만 19세 이상이 여윳돈으로 소액만 즐기는 것이 좋습니다. 도박 문제로
+          어려움이 있다면 한국도박문제예방치유원(국번 없이 1336)에서 상담받을 수
+          있습니다.
         </p>
         <p className="mt-2 text-slate-400">
           회차별 상세는{" "}
@@ -196,7 +245,7 @@ export default async function TrendsPage() {
           </Link>
           에서 확인하세요.
         </p>
-      </div>
+      </section>
 
       <Faq items={FAQ} />
     </div>
