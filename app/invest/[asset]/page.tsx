@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import AssetSimulator from "../AssetSimulator";
 import Faq from "../../components/Faq";
 import { ASSETS, getAsset, analyzeAsset, CURRENT_YEAR } from "@/lib/invest-data";
+import { getInvestStory } from "@/lib/invest-stories";
 import { formatKRW } from "@/lib/lotto-data";
 import { getRealPrices } from "@/lib/real-prices";
 
@@ -45,6 +46,7 @@ export default async function AssetPage({
   // 실데이터 소스(코인·미국주식·금)가 있으면 교체, 실패 시 예시값 폴백
   const { prices, live } = await getRealPrices(asset);
   const resolved = { ...asset, prices };
+  const story = getInvestStory(asset.key);
 
   return (
     <div className="space-y-6">
@@ -159,6 +161,40 @@ export default async function AssetPage({
                 에서 비교해 보세요.
               </p>
             </div>
+
+            {/* 그 사이 무슨 일이 있었나 — 자산별로 직접 쓴 해설(lib/invest-stories.ts) */}
+            {story && (
+              <section className="rounded-2xl bg-white p-5 text-sm leading-relaxed text-slate-600 shadow-sm ring-1 ring-slate-100">
+                <h2 className="text-base font-bold text-slate-800">
+                  {asset.name}, 그 사이 무슨 일이 있었나
+                </h2>
+                <p className="mt-2">{story.about}</p>
+
+                <h3 className="mt-4 font-semibold text-slate-800">
+                  2015~2024년 주요 사건
+                </h3>
+                <ul className="mt-2 space-y-2">
+                  {story.events.map((ev) => (
+                    <li key={ev.year + ev.text} className="flex gap-3">
+                      <span className="w-20 shrink-0 font-semibold tabular-nums text-indigo-600">
+                        {ev.year}
+                      </span>
+                      <span>{ev.text}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <h3 className="mt-4 font-semibold text-slate-800">
+                  시작 연도에 따라 결과가 달랐던 이유
+                </h3>
+                <p className="mt-2">{story.why}</p>
+
+                <p className="mt-3 text-xs text-slate-400">
+                  사건은 연도 단위로 간추린 참고용 설명이며, 특정 자산의 매수·매도를
+                  권하지 않습니다. 과거의 흐름은 미래 수익을 보장하지 않습니다.
+                </p>
+              </section>
+            )}
 
             <Faq items={FAQ} />
           </>
