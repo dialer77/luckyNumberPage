@@ -92,6 +92,7 @@ export default function RootLayout({
               <Link href="/about" className="hover:text-indigo-600">사이트 소개</Link>
               <Link href="/privacy" className="hover:text-indigo-600">개인정보처리방침</Link>
               <Link href="/terms" className="hover:text-indigo-600">이용약관</Link>
+              <Link href="/data-sources" className="hover:text-indigo-600">데이터 출처</Link>
               <Link href="/contact" className="hover:text-indigo-600">문의</Link>
             </div>
             {/* 검색 유입 1위 페이지로 가는 사이트 전역 링크 */}
