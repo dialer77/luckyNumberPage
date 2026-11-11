@@ -1,8 +1,9 @@
-// 로또 실데이터 — 동행복권 getLottoNumber + Upstash 캐시.
+// 로또 실데이터 — 공개 데이터셋 smok95/lotto(원 출처 동행복권) → Upstash.
 //
 // 과거 회차는 안 변하므로 Upstash에 영구 저장(기획서 §5: "자체 DB 축적").
-// 동행복권이 해외 IP를 차단하므로 이 fetch는 한국 리전(Vercel icn1)에서만
-// 성공합니다. 실패하면 예시 데이터로 폴백 → 사이트는 항상 정상 동작.
+// 채우기·갱신은 Vercel Cron(/api/cron/lotto, 매일 21:00 UTC)이 담당하고,
+// 여기서는 Upstash 조회만 합니다. 조회에 실패하면 lib/lotto-data.ts의
+// 내장 회차(실제 추첨 결과)로 폴백 → 사이트는 항상 정상 동작.
 //
 // ⚠️ 서버 전용.
 

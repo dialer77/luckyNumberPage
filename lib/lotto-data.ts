@@ -1,9 +1,7 @@
 // ─────────────────────────────────────────────────────────────
 // 로또 데이터 계층 (샘플)
 //
-// ⚠️ 지금은 하드코딩된 "예시 데이터"입니다.
-// 실제 배포 시에는 이 파일을 §8-1 데이터 파이프라인(동행복권 수집 →
-// 자체 DB)에서 읽어오는 코드로 교체하면 됩니다.
+// 실데이터는 lib/lotto-live.ts(Upstash)에서 읽고, 이 파일의 DRAWS는 조회 실패 시 폴백입니다.
 // 화면(page.tsx)들은 이 파일의 함수만 호출하므로, 데이터 출처가
 // 바뀌어도 UI 코드는 그대로 둘 수 있습니다. (관심사 분리)
 //
@@ -25,21 +23,23 @@ export type LottoDraw = {
   // 4등(5만원)·5등(5천원)은 규정상 고정이라 저장하지 않음 (drawPrizes 참고)
 };
 
-// 예시 회차 데이터 (최신 회차가 배열 앞쪽).
-// 실제 서비스에서는 전 회차를 자체 DB에 축적합니다.
+// 폴백용 내장 회차 데이터 (최신 회차가 배열 앞쪽).
+// 실서비스 데이터는 Upstash(lib/lotto-live.ts)에서 읽고, 조회에 실패했을 때만 이 값을 씁니다.
+// 그래서 지어낸 값이 아니라 실제 추첨 결과(제1169~1180회, smok95/lotto 기준)를 그대로 넣어 둡니다.
+// ⚠️ 이 배열에 가짜 번호를 넣지 말 것 — 폴백 시 실제 회차처럼 화면에 표시됩니다.
 const DRAWS: LottoDraw[] = [
-  { drwNo: 1180, drwNoDate: "2026-06-27", numbers: [3, 12, 19, 27, 38, 42], bonus: 7, firstWinAmount: 2_431_000_000, firstWinnerCount: 11, prize2: 54_800_000, prize3: 1_640_000 },
-  { drwNo: 1179, drwNoDate: "2026-06-20", numbers: [8, 15, 22, 24, 31, 45], bonus: 18, firstWinAmount: 1_876_540_000, firstWinnerCount: 14, prize2: 48_200_000, prize3: 1_510_000 },
-  { drwNo: 1178, drwNoDate: "2026-06-13", numbers: [1, 9, 16, 28, 33, 40], bonus: 25, firstWinAmount: 3_102_880_000, firstWinnerCount: 8, prize2: 61_300_000, prize3: 1_720_000 },
-  { drwNo: 1177, drwNoDate: "2026-06-06", numbers: [5, 11, 20, 29, 36, 44], bonus: 2, firstWinAmount: 2_045_120_000, firstWinnerCount: 13, prize2: 50_900_000, prize3: 1_480_000 },
-  { drwNo: 1176, drwNoDate: "2026-05-30", numbers: [4, 13, 18, 23, 39, 41], bonus: 30, firstWinAmount: 1_559_770_000, firstWinnerCount: 17, prize2: 43_600_000, prize3: 1_390_000 },
-  { drwNo: 1175, drwNoDate: "2026-05-23", numbers: [7, 14, 21, 26, 35, 43], bonus: 10, firstWinAmount: 2_780_430_000, firstWinnerCount: 9, prize2: 58_100_000, prize3: 1_680_000 },
-  { drwNo: 1174, drwNoDate: "2026-05-16", numbers: [2, 10, 17, 32, 37, 45], bonus: 6, firstWinAmount: 1_920_650_000, firstWinnerCount: 12, prize2: 49_500_000, prize3: 1_530_000 },
-  { drwNo: 1173, drwNoDate: "2026-05-09", numbers: [6, 12, 24, 30, 34, 42], bonus: 19, firstWinAmount: 3_450_000_000, firstWinnerCount: 7, prize2: 64_700_000, prize3: 1_790_000 },
-  { drwNo: 1172, drwNoDate: "2026-05-02", numbers: [1, 8, 15, 27, 33, 44], bonus: 22, firstWinAmount: 2_210_340_000, firstWinnerCount: 11, prize2: 52_300_000, prize3: 1_600_000 },
-  { drwNo: 1171, drwNoDate: "2026-04-25", numbers: [9, 16, 20, 28, 38, 40], bonus: 3, firstWinAmount: 1_688_910_000, firstWinnerCount: 15, prize2: 45_800_000, prize3: 1_440_000 },
-  { drwNo: 1170, drwNoDate: "2026-04-18", numbers: [4, 11, 19, 25, 31, 43], bonus: 14, firstWinAmount: 2_905_770_000, firstWinnerCount: 8, prize2: 59_600_000, prize3: 1_710_000 },
-  { drwNo: 1169, drwNoDate: "2026-04-11", numbers: [5, 13, 22, 29, 36, 41], bonus: 17, firstWinAmount: 1_777_200_000, firstWinnerCount: 16, prize2: 47_100_000, prize3: 1_470_000 },
+  { drwNo: 1180, drwNoDate: "2025-07-12", numbers: [6, 12, 18, 37, 40, 41], bonus: 3, firstWinAmount: 2_535_566_421, firstWinnerCount: 11, prize2: 64_563_034, prize3: 1_544_365 },
+  { drwNo: 1179, drwNoDate: "2025-07-05", numbers: [3, 16, 18, 24, 40, 44], bonus: 21, firstWinAmount: 2_162_821_097, firstWinnerCount: 13, prize2: 74_382_737, prize3: 1_567_787 },
+  { drwNo: 1178, drwNoDate: "2025-06-28", numbers: [5, 6, 11, 27, 43, 44], bonus: 17, firstWinAmount: 2_391_608_407, firstWinnerCount: 12, prize2: 53_744_010, prize3: 1_562_633 },
+  { drwNo: 1177, drwNoDate: "2025-06-21", numbers: [3, 7, 15, 16, 19, 43], bonus: 21, firstWinAmount: 4_576_672_000, firstWinnerCount: 6, prize2: 61_022_294, prize3: 1_471_126 },
+  { drwNo: 1176, drwNoDate: "2025-06-14", numbers: [7, 9, 11, 21, 30, 35], bonus: 29, firstWinAmount: 2_052_166_154, firstWinnerCount: 13, prize2: 49_959_102, prize3: 1_258_523 },
+  { drwNo: 1175, drwNoDate: "2025-06-07", numbers: [3, 4, 6, 8, 32, 42], bonus: 31, firstWinAmount: 1_384_026_094, firstWinnerCount: 20, prize2: 50_145_873, prize3: 1_451_675 },
+  { drwNo: 1174, drwNoDate: "2025-05-31", numbers: [8, 11, 14, 17, 36, 39], bonus: 22, firstWinAmount: 1_910_619_425, firstWinnerCount: 15, prize2: 56_194_689, prize3: 1_494_540 },
+  { drwNo: 1173, drwNoDate: "2025-05-24", numbers: [1, 5, 18, 20, 30, 35], bonus: 3, firstWinAmount: 1_179_946_063, firstWinnerCount: 24, prize2: 50_210_471, prize3: 1_503_595 },
+  { drwNo: 1172, drwNoDate: "2025-05-17", numbers: [7, 9, 24, 40, 42, 44], bonus: 45, firstWinAmount: 2_203_004_452, firstWinnerCount: 13, prize2: 48_705_881, prize3: 1_560_372 },
+  { drwNo: 1171, drwNoDate: "2025-05-10", numbers: [3, 6, 7, 11, 12, 17], bonus: 19, firstWinAmount: 1_128_345_286, firstWinnerCount: 21, prize2: 26_683_842, prize3: 742_752 },
+  { drwNo: 1170, drwNoDate: "2025-05-03", numbers: [3, 13, 28, 34, 38, 42], bonus: 25, firstWinAmount: 1_386_550_969, firstWinnerCount: 20, prize2: 44_872_200, prize3: 815_427 },
+  { drwNo: 1169, drwNoDate: "2025-04-26", numbers: [5, 12, 24, 26, 39, 42], bonus: 20, firstWinAmount: 2_852_735_813, firstWinnerCount: 10, prize2: 42_451_426, prize3: 1_465_648 },
 ];
 
 // 등수 → 1게임당 당첨금. 1·2·3등은 해당 회차 실제 금액, 4·5등은 규정상 고정.
