@@ -13,6 +13,12 @@ const LOTTO_SLUGS = new Set([
   "lotto-prize-tiers",
   "pension-lottery",
   "how-to-check-lotto-numbers",
+  "lotto-biggest-smallest-jackpots",
+  "lotto-most-winners-draws",
+  "lotto-jackpot-real-value",
+  "lotto-number-frequency-test",
+  "lotto-odd-even-sum-distribution",
+  "lotto-no-winner-draws",
 ]);
 function relatedGuides(slug: string) {
   const isLotto = LOTTO_SLUGS.has(slug);
@@ -125,6 +131,51 @@ export default async function GuidePage({
                   </li>
                 ))}
               </ul>
+            )}
+            {sec.table && (
+              <div className="space-y-1">
+                <div className="overflow-x-auto rounded-lg ring-1 ring-slate-100">
+                  <table className="w-full border-collapse text-sm">
+                    {sec.table.caption && (
+                      <caption className="bg-white px-3 pt-2 pb-1 text-left text-xs font-medium text-slate-500">
+                        {sec.table.caption}
+                      </caption>
+                    )}
+                    <thead>
+                      <tr className="bg-slate-50">
+                        {sec.table.head.map((h, k) => (
+                          <th
+                            key={k}
+                            scope="col"
+                            className="border-b border-slate-200 px-3 py-2 text-left font-semibold whitespace-nowrap text-slate-700"
+                          >
+                            {h}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white">
+                      {sec.table.rows.map((row, r) => (
+                        <tr key={r} className="border-b border-slate-100 last:border-0">
+                          {row.map((cell, c) => (
+                            <td
+                              key={c}
+                              className="px-3 py-2 whitespace-nowrap text-slate-600"
+                            >
+                              {cell}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {sec.table.note && (
+                  <p className="text-xs leading-relaxed text-slate-400">
+                    {sec.table.note}
+                  </p>
+                )}
+              </div>
             )}
           </section>
         ))}
