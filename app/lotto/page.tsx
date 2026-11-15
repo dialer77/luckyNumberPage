@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import NumberBall from "../components/NumberBall";
 import Faq from "../components/Faq";
-import { formatKRW, afterTax } from "@/lib/lotto-data";
+import LatestDrawCard from "../components/LatestDrawCard";
 import { getLiveLatest } from "@/lib/lotto-live";
 import { LOTTO_FEATURES } from "@/lib/brand";
 
@@ -49,27 +48,8 @@ export default async function LottoHomePage() {
       </div>
 
       {/* 최신 회차 하이라이트 */}
-      <Link
-        href={`/lotto/${latest.drwNo}`}
-        className="block rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 hover:ring-indigo-200"
-      >
-        <div className="text-xs text-slate-400">
-          제 {latest.drwNo}회 · {latest.drwNoDate} 최신 당첨번호
-        </div>
-        <div className="mt-2 flex flex-wrap items-center gap-1.5">
-          {latest.numbers.map((n) => (
-            <NumberBall key={n} n={n} size="md" />
-          ))}
-          <span className="mx-1 text-slate-300">+</span>
-          <NumberBall n={latest.bonus} size="md" />
-        </div>
-        <div className="mt-3 text-sm text-slate-500">
-          세후 실수령{" "}
-          <span className="font-semibold text-indigo-600">
-            {formatKRW(afterTax(latest.firstWinAmount))}
-          </span>
-        </div>
-      </Link>
+      {/* 토요일 추첨 후엔 자동으로 최신 결과로 바뀌는 실시간 카드 */}
+      <LatestDrawCard initial={latest} suffix="최신 당첨번호" />
 
       {/* 기능 카드 */}
       <div className="grid gap-3 sm:grid-cols-2">

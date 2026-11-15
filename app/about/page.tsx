@@ -80,7 +80,8 @@ export default function AboutPage() {
         <ul className="list-disc space-y-1 pl-5 text-slate-600 leading-relaxed">
           <li>
             <strong>로또 당첨번호·당첨금</strong>: 동행복권이 공개한 회차별
-            결과를 자체 DB에 저장하고, 매주 토요일 추첨 다음 날 아침 자동으로 갱신합니다.
+            결과를 자체 DB에 저장하고, 매주 토요일 추첨 직후 당첨번호와 당첨금이
+            발표되는 대로 자동으로 반영합니다.
             번호 출현 통계는 이 DB의 최근 50회, 추이 그래프는 전 회차 데이터로
             계산합니다.
           </li>

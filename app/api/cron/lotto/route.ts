@@ -1,54 +1,15 @@
-// 주간 로또 데이터 자동 갱신 (Vercel Cron).
+// 로또 데이터 비상용 일일 동기화 (Vercel Cron, vercel.json — 매일 21:00 UTC = 06:00 KST).
 //
-// 동행복권은 브라우저만 통과시키는 봇 차단이 걸려 스크립트로는 못 긁는다.
-// 대신 매주 자동 업데이트되는 공개 데이터셋(smok95/lotto, GitHub)에서
-// 새 회차만 받아 Upstash에 upsert한다. GitHub는 어디서든 접근 가능.
+// 토요일 추첨 직후의 실시간 반영은 /api/lotto/latest 가 맡는다(방문 시 확인).
+// 이 cron은 그날 방문이 없었을 때를 대비한 안전장치다. Hobby 요금제라 하루 1회가 한계.
+// 동기화 로직은 lib/lotto-sync.ts 하나로 공유한다.
 //
-// vercel.json 의 crons 설정으로 매일 실행되며, 새 회차가 없으면 아무것도 안 한다.
 // 수동 확인: https://manyage.com/api/cron/lotto (CRON_SECRET 미설정 시)
 
-import { redis } from "@/lib/redis";
-import type { LottoDraw } from "@/lib/lotto-data";
+import { syncLotto, revalidateLottoPages } from "@/lib/lotto-sync";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
-
-const RAW = "https://raw.githubusercontent.com/smok95/lotto/main/results";
-
-type Smok = {
-  draw_no: number;
-  numbers: number[];
-  bonus_no: number;
-  date: string;
-  divisions?: { prize?: number; winners?: number }[];
-};
-
-const num = (x?: number) => (typeof x === "number" ? x : 0);
-
-// smok95 형식 → 사이트 LottoDraw 형식
-function toDraw(r: Smok): LottoDraw {
-  const d = r.divisions ?? [];
-  return {
-    drwNo: r.draw_no,
-    drwNoDate: String(r.date).slice(0, 10), // YYYY-MM-DD
-    numbers: r.numbers as LottoDraw["numbers"],
-    bonus: r.bonus_no,
-    firstWinAmount: num(d[0]?.prize),
-    firstWinnerCount: num(d[0]?.winners),
-    prize2: num(d[1]?.prize),
-    prize3: num(d[2]?.prize),
-  };
-}
-
-async function fetchJson<T>(url: string): Promise<T | null> {
-  try {
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) return null;
-    return (await res.json()) as T;
-  } catch {
-    return null;
-  }
-}
 
 export async function GET(request: Request) {
   // 선택적 보안: CRON_SECRET 이 설정돼 있으면 Bearer 토큰 검증.
@@ -57,34 +18,13 @@ export async function GET(request: Request) {
   if (secret && request.headers.get("authorization") !== `Bearer ${secret}`) {
     return Response.json({ ok: false, error: "unauthorized" }, { status: 401 });
   }
-  if (!redis) {
-    return Response.json({ ok: false, error: "no redis" }, { status: 500 });
+
+  const result = await syncLotto();
+  revalidateLottoPages(result.added);
+
+  if (!result.ok) {
+    const status = result.error === "no redis" ? 500 : 502;
+    return Response.json(result, { status });
   }
-
-  // 최신 회차 확인
-  const latest = await fetchJson<Smok>(`${RAW}/latest.json`);
-  if (!latest?.draw_no) {
-    return Response.json({ ok: false, error: "latest fetch failed" }, { status: 502 });
-  }
-  const newest = latest.draw_no;
-
-  const storedRaw = await redis.get<number>("lotto:latestNo");
-  const stored =
-    typeof storedRaw === "number" ? storedRaw : Number(storedRaw) || 0;
-
-  // 새 회차만 upsert (과거 회차는 안 변하므로 건너뜀).
-  // 추적을 잃었으면(stored=0) 최신 회차 하나만 확실히 채운다.
-  const start = stored > 0 ? stored + 1 : newest;
-  const added: number[] = [];
-  for (let n = start; n <= newest; n++) {
-    const r = n === newest ? latest : await fetchJson<Smok>(`${RAW}/${n}.json`);
-    if (!r?.draw_no) continue;
-    await redis.set(`lotto:${n}`, toDraw(r)); // 영구 저장
-    added.push(n);
-  }
-
-  // latestNo 는 만료 없이 영구 저장 (cron 이 매주 갱신).
-  await redis.set("lotto:latestNo", newest);
-
-  return Response.json({ ok: true, newest, previous: stored, added });
+  return Response.json(result);
 }

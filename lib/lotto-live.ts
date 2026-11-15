@@ -1,8 +1,8 @@
 // 로또 실데이터 — 공개 데이터셋 smok95/lotto(원 출처 동행복권) → Upstash.
 //
 // 과거 회차는 안 변하므로 Upstash에 영구 저장(기획서 §5: "자체 DB 축적").
-// 채우기·갱신은 Vercel Cron(/api/cron/lotto, 매일 21:00 UTC)이 담당하고,
-// 여기서는 Upstash 조회만 합니다. 조회에 실패하면 lib/lotto-data.ts의
+// 채우기·갱신은 lib/lotto-sync.ts 가 담당합니다(토요일 추첨 직후엔 방문 시
+// /api/lotto/latest, 그 밖엔 매일 06:00 KST cron). 여기서는 Upstash 조회만 합니다. 조회에 실패하면 lib/lotto-data.ts의
 // 내장 회차(실제 추첨 결과)로 폴백 → 사이트는 항상 정상 동작.
 //
 // ⚠️ 서버 전용.
