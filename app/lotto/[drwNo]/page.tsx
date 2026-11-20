@@ -13,6 +13,7 @@ import {
   DRAW_BASELINE,
 } from "@/lib/lotto-data";
 import { getLiveDraw, getLiveLatestNo } from "@/lib/lotto-live";
+import { isRoundIndexable } from "@/lib/lotto-index";
 import { SITE } from "@/lib/brand";
 
 // ─────────────────────────────────────────────────────────────
@@ -37,10 +38,17 @@ export async function generateMetadata({
   params,
 }: PageProps<"/lotto/[drwNo]">): Promise<Metadata> {
   const { drwNo } = await params;
-  const draw = await getLiveDraw(Number(drwNo));
+  const [draw, latestNo] = await Promise.all([
+    getLiveDraw(Number(drwNo)),
+    getLiveLatestNo(),
+  ]);
   if (!draw) return { title: "회차를 찾을 수 없음" };
 
   return {
+    // 최근 회차·기록 회차만 색인, 나머지는 페이지는 열리되 검색 색인에서 제외(lib/lotto-index.ts)
+    ...(isRoundIndexable(draw.drwNo, latestNo)
+      ? {}
+      : { robots: { index: false, follow: true } }),
     title: `${draw.drwNo}회 로또 당첨번호 (${draw.drwNoDate})`,
     description: `제 ${draw.drwNo}회 로또 당첨번호는 ${draw.numbers.join(
       ", "

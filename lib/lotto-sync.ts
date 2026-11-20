@@ -15,7 +15,9 @@
 // ⚠️ 서버 전용.
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { redis as defaultRedis } from "./redis";
+import { notifyIndexNow } from "./indexnow";
 import type { LottoDraw } from "./lotto-data";
 import { expectedLatestNo } from "./lotto-schedule";
 
@@ -202,8 +204,8 @@ export async function syncIfDue(opts: SyncOptions = {}): Promise<SyncResult> {
 }
 
 /**
- * 새 회차가 저장되면 최신 회차를 보여 주는 페이지 캐시를 비운다.
- * (Route Handler에서 부르면 다음 방문 때 새로 만들어진다.)
+ * 새 회차가 저장되면 최신 회차를 보여 주는 페이지 캐시를 비우고(다음 방문 때 새로 생성),
+ * 응답이 나간 뒤 IndexNow로 검색엔진에 새 URL을 알린다. Route Handler 안에서 부를 것.
  */
 export function revalidateLottoPages(added: number[]) {
   if (added.length === 0) return;
@@ -216,6 +218,7 @@ export function revalidateLottoPages(added: number[]) {
     "/stats",
     "/tools/challenge",
     "/sitemap.xml",
+    "/rss.xml",
   ]) {
     revalidatePath(p);
   }
@@ -223,4 +226,12 @@ export function revalidateLottoPages(added: number[]) {
     revalidatePath(`/lotto/${n}`); // 미리 방문돼 404로 캐시됐을 수 있음
     revalidatePath(`/lotto/${n - 1}`); // '다음 회차' 링크 갱신
   }
+  after(() =>
+    notifyIndexNow([
+      ...added.map((n) => `/lotto/${n}`),
+      "/lotto/list",
+      "/lotto",
+      "/",
+    ])
+  );
 }

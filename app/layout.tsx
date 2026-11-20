@@ -38,6 +38,8 @@ export default function RootLayout({
     <html lang="ko" className="h-full" suppressHydrationWarning>
       {/* AdSense 도메인 연결을 미리 열어 스크립트 로드 지연 완화 (FCP 개선) */}
       <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+      {/* RSS 피드 (네이버 서치어드바이저 등 검색엔진 수집용) — 페이지별 alternates에 덮이지 않게 직접 둠 */}
+      <link rel="alternate" type="application/rss+xml" title={SITE.name} href="/rss.xml" />
       <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
 
       {/* Google AdSense 로더 — React 19가 async 스크립트를 <head>로 끌어올려
