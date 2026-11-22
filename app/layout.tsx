@@ -25,8 +25,11 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ko_KR",
   },
-  // AdSense 사이트 소유 확인용 메타 태그
-  other: { "google-adsense-account": ADSENSE_CLIENT },
+  // 사이트 소유 확인용 메타 태그 (AdSense, 네이버 서치어드바이저 — 공개 값)
+  other: {
+    "google-adsense-account": ADSENSE_CLIENT,
+    "naver-site-verification": "abaff3e7f59f2637deeed2e55e8820e572bf1f84",
+  },
 };
 
 export default function RootLayout({
