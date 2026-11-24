@@ -119,6 +119,13 @@ export default function TakeHomePage() {
           연봉이 오를수록 적용되는 소득세율 구간(6%~45%)이 높아져, 세전 인상액만큼
           실수령이 늘지는 않는다는 점도 알아두면 좋아요.
         </p>
+        <p className="mt-2">
+          연봉별 월급을 한 번에 비교하려면{" "}
+          <Link href="/calc/salary-table" className={link}>
+            2026 연봉 실수령액 표
+          </Link>
+          (2,000만원~1억 5,000만원, 100만원 단위)를 보세요.
+        </p>
       </div>
 
       {/* 계산 방식 — lib/salary.ts calcTakeHome 그대로, 연봉 5,000만원 예시 */}

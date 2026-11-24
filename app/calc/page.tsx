@@ -49,6 +49,12 @@ const CALCULATORS = [
     desc: "4대보험·세금 뗀 세후 월급",
   },
   {
+    href: "/calc/salary-table",
+    emoji: "📋",
+    title: "2026 연봉 실수령액 표",
+    desc: "2천만~1억 5천만원, 100만원 단위 월급 한눈에",
+  },
+  {
     href: "/calc/salary",
     emoji: "💼",
     title: "이직 연봉 계산기",
