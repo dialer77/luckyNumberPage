@@ -4,6 +4,7 @@ import { GUIDES } from "@/lib/guides";
 import { SITE } from "@/lib/brand";
 import { getLiveLatestNo } from "@/lib/lotto-live";
 import { NOTABLE_ROUNDS, RECENT_INDEXED_ROUNDS } from "@/lib/lotto-index";
+import { hasLivePriceSource } from "@/lib/real-prices";
 
 // sitemap.xml 을 코드로 자동 생성 → 검색엔진이 핵심 페이지를 빠르게 수집.
 // 하루마다 재생성해 새 회차(cron 갱신분)를 자동으로 색인에 포함.
@@ -51,9 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/lotto/list",
     "/lotto/trends",
     "/stats",
-    "/ranking",
-    "/tools/generator",
-    "/tools/challenge",
+    // /ranking·/tools/generator·/tools/challenge 는 놀이용이라 noindex → sitemap에서도 제외
     "/invest",
     "/invest/dividend",
     "/calc",
@@ -89,8 +88,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(ROUND1_UTC + (n - 1) * WEEK),
   }));
 
-  // 자산별 "그때샀으면" 페이지
-  const assetPages = ASSETS.map((a) => ({
+  // 자산별 "그때샀으면" 페이지 — 실시세 소스가 없는 자산(noindex)은 제외
+  const assetPages = ASSETS.filter((a) => hasLivePriceSource(a.key)).map((a) => ({
     url: `${BASE_URL}/invest/${a.key}`,
     lastModified: new Date("2026-07-17"),
   }));

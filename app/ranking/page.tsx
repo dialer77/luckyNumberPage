@@ -16,6 +16,8 @@ import { redis } from "@/lib/redis";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/ranking" },
+  // 놀이용 모의 실험 — 사이트는 그대로 쓰되 검색 색인에서는 뺀다.
+  robots: { index: false, follow: true },
   title: "오늘의 랭킹 — 로또 1,000게임 모의 도전 기록",
   description:
     "최신 회차 당첨번호를 목표로 가상의 1,000게임을 자동으로 돌려 본 모의 실험 기록입니다. 실제 돈은 오가지 않으며, 대부분 손실로 끝나는 결과로 로또의 기대값을 체감해 보세요.",

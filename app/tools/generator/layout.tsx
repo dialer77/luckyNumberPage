@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   description:
     "1~45 중 6개 로또 번호를 무작위로 뽑아 보세요. 중복 없는 추첨 방식, 생성 원리와 확률을 함께 안내합니다.",
   alternates: { canonical: "/tools/generator" },
+  // 놀이용 도구 — 사이트는 그대로 쓰되 검색 색인에서는 뺀다(로또 '게임'은 도박 정책상 보수적으로 판정될 수 있음).
+  robots: { index: false, follow: true },
 };
 
 export default function GeneratorLayout({

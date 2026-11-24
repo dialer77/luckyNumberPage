@@ -8,6 +8,11 @@ import { PAST_YEARS, CURRENT_YEAR, type Asset } from "./invest-data";
 import { coinPriceFetchers } from "./coin-prices";
 import { getStockPrices, isStockSymbol } from "./stock-prices";
 
+/** 실시세를 가져올 소스가 있는 자산인지(없으면 늘 내장 예시값으로 계산됨) */
+export function hasLivePriceSource(key: string): boolean {
+  return isStockSymbol(key) || coinPriceFetchers(key) != null;
+}
+
 export async function getRealPrices(
   asset: Asset
 ): Promise<{ prices: Record<number, number>; live: boolean }> {

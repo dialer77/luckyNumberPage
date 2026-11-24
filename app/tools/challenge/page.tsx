@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description:
     "최신 회차 당첨번호를 목표로 무작위 번호를 뽑아 몇 번 만에 1등이 나오는지 체험해 보세요. 로또 1등 확률(814만 분의 1)을 몸으로 느껴보는 시뮬레이터입니다.",
   alternates: { canonical: "/tools/challenge" },
+  // 놀이용 모의 실험 — 사이트는 그대로 쓰되 검색 색인에서는 뺀다.
+  robots: { index: false, follow: true },
 };
 
 const FAQ = [

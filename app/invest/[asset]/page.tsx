@@ -6,7 +6,7 @@ import Faq from "../../components/Faq";
 import { ASSETS, getAsset, analyzeAsset, CURRENT_YEAR } from "@/lib/invest-data";
 import { getInvestStory } from "@/lib/invest-stories";
 import { formatKRW } from "@/lib/lotto-data";
-import { getRealPrices } from "@/lib/real-prices";
+import { getRealPrices, hasLivePriceSource } from "@/lib/real-prices";
 
 // 배수 표기: 10배↑ 정수, 1배↑ 소수1자리, 손실이면 하락률 병기
 function fmtMultiple(m: number): string {
@@ -30,6 +30,11 @@ export async function generateMetadata({
   const asset = getAsset(key);
   if (!asset) return { title: "자산을 찾을 수 없음" };
   return {
+    // 실시세 소스가 없어 늘 예시 가격으로 계산되는 자산(삼성전자·SK하이닉스)은
+    // 가격을 실제 값으로 맞출 때까지 검색 색인에서 뺀다.
+    ...(hasLivePriceSource(asset.key)
+      ? {}
+      : { robots: { index: false, follow: true } }),
     title: `그때 ${asset.name} 샀으면 — 지금 얼마?`,
     description: `그때 ${asset.name}에 투자했다면 지금 얼마가 됐을까? 일시불·적립식으로 수익을 시뮬레이션해 보세요.`,
     alternates: { canonical: `/invest/${asset.key}` },
