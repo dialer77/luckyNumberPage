@@ -1,10 +1,11 @@
 "use client";
-// 퇴직금 계산기 (근사).
+// 퇴직금 계산기 (근사). 계산식은 lib/severance.ts (퇴직금 계산표 /calc/severance-table 과 같은 식)
 // 퇴직금 = 1일 평균임금 × 30 × (재직일수 / 365)
 // 1일 평균임금 ≈ 월 평균급여 ÷ 30.42 (365/12)
 
 import { useState } from "react";
 import { formatKRW } from "@/lib/lotto-data";
+import { calcSeverance } from "@/lib/severance";
 import ShareButton from "@/app/components/ShareButton";
 import { Card, NumberInput, Stat } from "./ui";
 
@@ -13,9 +14,7 @@ export default function SeveranceCalculator() {
   const [years, setYears] = useState(3);
   const [months, setMonths] = useState(0);
 
-  const totalDays = years * 365 + months * 30.42;
-  const dailyWage = monthly / 30.42; // 1일 평균임금 근사
-  const severance = Math.round((dailyWage * 30 * totalDays) / 365);
+  const { totalDays, dailyWage, severance } = calcSeverance(monthly, years, months);
   const serviceStr = `${years}년${months > 0 ? ` ${months}개월` : ""}`;
 
   return (

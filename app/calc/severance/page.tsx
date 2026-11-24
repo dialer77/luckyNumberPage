@@ -44,6 +44,13 @@ export default function SeverancePage() {
           대략적으로는 <b>한 달치 평균임금 × 근속연수</b> 정도로 생각하면 됩니다.
           이직·퇴사 전에 예상 금액을 가늠해 두면 좋아요.
         </p>
+        <p className="mt-2 text-slate-500">
+          월급·근속연수별 퇴직금과 퇴직소득세 추정치는{" "}
+          <Link href="/calc/severance-table" className="text-indigo-600 hover:underline">
+            2026 퇴직금 계산표
+          </Link>
+          에 정리해 두었습니다.
+        </p>
       </div>
       <Faq items={FAQ} />
     </div>

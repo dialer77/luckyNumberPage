@@ -222,6 +222,18 @@ export default function TakeHomePage() {
         <h2 className={h2}>함께 보면 좋은 글</h2>
         <ul className="mt-2 space-y-1.5">
           <li>
+            <Link href="/calc/salary-rank" className={link}>
+              내 연봉 상위 몇 %?
+            </Link>{" "}
+            — 국세청 2024년 자료로 본 전국 직장인 중 내 위치
+          </li>
+          <li>
+            <Link href="/calc/salary-by-age" className={link}>
+              내 월급, 내 나이대에서 상위 몇 %?
+            </Link>{" "}
+            — 나이대별 중위·평균 월급과 비교
+          </li>
+          <li>
             <Link href="/guide/salary-net-pay" className={link}>
               연봉 실수령액, 왜 생각보다 적을까?
             </Link>{" "}

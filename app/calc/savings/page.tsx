@@ -40,6 +40,13 @@ export default function SavingsCalcPage() {
           받는 이자가 차이 납니다. 이 계산기로 세전 이자와 세금(15.4%)을 뗀 세후
           만기 수령액을 미리 확인해 보세요.
         </p>
+        <p className="mt-2 text-slate-500">
+          월 납입액·기간·금리별 결과를 한 번에 비교하려면{" "}
+          <Link href="/calc/savings-table" className="text-indigo-600 hover:underline">
+            2026 적금·예금 이자 계산표
+          </Link>
+          를 보세요.
+        </p>
       </div>
       <Faq items={FAQ} />
     </div>

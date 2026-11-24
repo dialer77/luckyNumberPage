@@ -182,6 +182,12 @@ export default function PrizeCalcPage() {
         <h2 className={h2}>함께 보면 좋은 글</h2>
         <ul className="mt-2 space-y-1.5">
           <li>
+            <Link href="/calc/prize-table" className={link}>
+              2026 로또 당첨금 실수령액 표
+            </Link>{" "}
+            — 1억~100억 세후 금액과 실효세율을 한 표로
+          </li>
+          <li>
             <Link href="/guide/lotto-tax" className={link}>
               로또 당첨금 세금과 실수령액 완벽 정리
             </Link>{" "}

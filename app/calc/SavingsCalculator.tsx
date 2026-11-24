@@ -3,10 +3,9 @@
 
 import { useState } from "react";
 import { formatKRW } from "@/lib/lotto-data";
+import { fixedDeposit, regularSavings } from "@/lib/savings";
 import ShareButton from "@/app/components/ShareButton";
 import { Card, NumberInput, Stat } from "./ui";
-
-const TAX = 0.154; // 일반과세 15.4%
 
 export default function SavingsCalculator() {
   const [mode, setMode] = useState<"regular" | "deposit">("regular");
@@ -15,20 +14,12 @@ export default function SavingsCalculator() {
   const [rate, setRate] = useState(3.5);
   const [months, setMonths] = useState(12);
 
+  // 계산식은 lib/savings.ts (이자표 /calc/savings-table 과 같은 식)
   // 적금(정기적금): 단리 관례 — 이자 = M×r×(n(n+1)/2)/12
-  // 예금(정기예금): 단리 — 이자 = P×r×(n/12)
+  // 예금(정기예금): 단리 — 이자 = P×r×(n/12), 세금은 일반과세 15.4%
   const r = rate / 100;
-  let totalIn: number;
-  let interest: number;
-  if (mode === "regular") {
-    totalIn = monthly * months;
-    interest = monthly * r * ((months * (months + 1)) / 2) / 12;
-  } else {
-    totalIn = principal;
-    interest = principal * r * (months / 12);
-  }
-  const tax = interest * TAX;
-  const net = totalIn + interest - tax;
+  const { totalIn, interest, tax, net } =
+    mode === "regular" ? regularSavings(monthly, r, months) : fixedDeposit(principal, r, months);
 
   return (
     <Card

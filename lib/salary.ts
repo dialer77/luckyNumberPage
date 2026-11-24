@@ -47,6 +47,11 @@ const BRACKETS = [
   { upto: Infinity, rate: 0.45, deduct: 65_940_000 },
 ];
 
+/** 종합소득세 기본세율로 구한 산출세액. 퇴직소득세(lib/severance.ts)도 이 함수를 쓴다. */
+export function basicIncomeTax(base: number): number {
+  return incomeTax(base).tax;
+}
+
 function incomeTax(base: number): { tax: number; rate: number } {
   if (base <= 0) return { tax: 0, rate: 0 };
   const b = BRACKETS.find((x) => base <= x.upto)!;

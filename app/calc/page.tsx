@@ -37,6 +37,12 @@ const CALCULATORS = [
     desc: "세전 당첨금 → 세금·세후 실수령액",
   },
   {
+    href: "/calc/prize-table",
+    emoji: "🧾",
+    title: "로또 당첨금 실수령액 표",
+    desc: "1억~100억, 세금·실효세율 한눈에",
+  },
+  {
     href: "/calc/compound",
     emoji: "📈",
     title: "복리 계산기",
@@ -79,6 +85,12 @@ const CALCULATORS = [
     desc: "세후 만기 수령액 계산",
   },
   {
+    href: "/calc/savings-table",
+    emoji: "📅",
+    title: "적금·예금 이자 계산표",
+    desc: "월 납입액·기간·금리별 세후 이자",
+  },
+  {
     href: "/calc/inflation",
     emoji: "🏷️",
     title: "물가 계산기",
@@ -101,6 +113,12 @@ const CALCULATORS = [
     emoji: "🧳",
     title: "퇴직금 계산기",
     desc: "근속·급여로 예상 퇴직금",
+  },
+  {
+    href: "/calc/severance-table",
+    emoji: "📑",
+    title: "퇴직금 계산표",
+    desc: "월급·근속연수별 퇴직금과 퇴직소득세",
   },
 ];
 
