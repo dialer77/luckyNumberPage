@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import TakeHomeCalculator from "../TakeHomeCalculator";
 import Faq from "../../components/Faq";
+import {
+  calcTakeHome,
+  wonFull,
+  salaryWhereRateStarts,
+  INSURANCE_2026,
+} from "@/lib/salary";
 
 export const metadata: Metadata = {
   title: "연봉 실수령액 계산기 — 2026 세후 월급 계산",
@@ -11,20 +17,35 @@ export const metadata: Metadata = {
   alternates: { canonical: "/calc/take-home" },
 };
 
-// 아래 예시·FAQ의 금액은 lib/salary.ts의 calcTakeHome으로 계산한 값입니다
-// (본인 1인, 월 비과세 식대 20만원). 계산식이 바뀌면 이 숫자들도 다시 계산해 고치세요.
+// 아래 예시·표·FAQ의 숫자는 모두 lib/salary.ts 의 calcTakeHome 으로 그 자리에서 계산한다
+// (본인 1인, 월 비과세 식대 20만원). 요율·세법이 바뀌면 lib/salary.ts 만 고치면 된다.
+const pct = (x: number, d = 1) => `${(x * 100).toFixed(d)}%`;
+const R = INSURANCE_2026;
+const INS_TEXT = `국민연금 ${pct(R.pension, 2)} + 건강보험 ${pct(R.health, 3)} + 장기요양(건강보험료 × ${pct(R.longTermCareOfHealth, 2)}) + 고용보험 ${pct(R.employment, 1)}`;
+const INS_SUM = R.pension + R.health * (1 + R.longTermCareOfHealth) + R.employment;
+
+const ex5 = calcTakeHome(50_000_000);
+const ex5noMeal = calcTakeHome(50_000_000, 0);
+const rateOf = (g: number) => calcTakeHome(g).net / g;
+const raiseKeep = (from: number, to: number) =>
+  (calcTakeHome(to).net - calcTakeHome(from).net) / (to - from);
+const raise56 = calcTakeHome(60_000_000).net - ex5.net;
+const r15 = salaryWhereRateStarts(0.15);
+const r24 = salaryWhereRateStarts(0.24);
+const r35 = salaryWhereRateStarts(0.35);
+
 const FAQ = [
   {
     q: "연봉 실수령액은 어떻게 계산하나요?",
-    a: "세전 연봉에서 4대보험(국민연금·건강보험·장기요양·고용보험, 약 9.4%)과 소득세·지방소득세를 뺀 금액이 실수령액입니다. 이 계산기는 근로소득공제·누진세율·세액공제를 대략 반영합니다.",
+    a: `세전 연봉에서 4대보험(${INS_TEXT}, 합계 약 ${pct(INS_SUM, 1)})과 소득세·지방소득세를 뺀 금액이 실수령액입니다. 이 계산기는 근로소득공제·누진세율·세액공제를 대략 반영합니다.`,
   },
   {
     q: "실수령률은 보통 얼마인가요?",
-    a: "연봉이 높을수록 세율 구간이 올라가 실수령률(실수령/세전)은 낮아집니다. 이 계산기 기준(본인 1인, 식대 월 20만원)으로 연봉 3,000만원은 약 89%, 5,000만원은 약 84%, 1억원은 약 76%입니다.",
+    a: `연봉이 높을수록 세율 구간이 올라가 실수령률(실수령/세전)은 낮아집니다. 이 계산기 기준(본인 1인, 식대 월 20만원)으로 연봉 3,000만원은 약 ${pct(rateOf(30_000_000), 0)}, 5,000만원은 약 ${pct(rateOf(50_000_000), 0)}, 1억원은 약 ${pct(rateOf(100_000_000), 0)}입니다.`,
   },
   {
     q: "비과세 식대는 무엇인가요?",
-    a: "식대 등 일정 비과세 항목은 세금과 4대보험 계산에서 제외되어 실수령액을 늘립니다. 흔히 월 20만원까지 비과세로 처리합니다. 연봉 5,000만원 기준으로 식대 20만원을 넣으면 월 실수령이 350만 2,713원, 0원으로 넣으면 345만 2,563원으로 한 달에 5만원가량 차이 납니다.",
+    a: `식대 등 일정 비과세 항목은 세금과 4대보험 계산에서 제외되어 실수령액을 늘립니다. 흔히 월 20만원까지 비과세로 처리합니다. 연봉 5,000만원 기준으로 식대 20만원을 넣으면 월 실수령이 ${wonFull(ex5.monthlyNet)}, 0원으로 넣으면 ${wonFull(ex5noMeal.monthlyNet)}으로 한 달에 ${wonFull(ex5.monthlyNet - ex5noMeal.monthlyNet)} 차이 납니다.`,
   },
   {
     q: "실제 급여명세서와 차이가 나는 이유는?",
@@ -32,11 +53,11 @@ const FAQ = [
   },
   {
     q: "연봉이 1,000만원 오르면 실수령은 얼마나 늘어나나요?",
-    a: "이 계산기 기준으로 5,000만원에서 6,000만원이 되면 연 실수령이 749만 2,500원(월 약 62만원) 늘어 인상액의 약 75%가 남습니다. 3,000만원 → 4,000만원은 약 77%, 9,000만원 → 1억원은 약 66%가 남아, 연봉이 높을수록 인상분에서 세금으로 나가는 몫이 커집니다.",
+    a: `이 계산기 기준으로 5,000만원에서 6,000만원이 되면 연 실수령이 ${wonFull(raise56)}(월 약 ${wonFull(Math.round(raise56 / 12 / 10_000) * 10_000)}) 늘어 인상액의 약 ${pct(raiseKeep(50_000_000, 60_000_000), 0)}가 남습니다. 3,000만원 → 4,000만원은 약 ${pct(raiseKeep(30_000_000, 40_000_000), 0)}, 9,000만원 → 1억원은 약 ${pct(raiseKeep(90_000_000, 100_000_000), 0)}가 남아, 연봉이 높을수록 인상분에서 세금으로 나가는 몫이 커집니다.`,
   },
   {
     q: "세율 구간이 바뀌면 실수령이 오히려 줄어드나요?",
-    a: "아닙니다. 누진세율은 과세표준 가운데 구간을 넘는 부분에만 높은 세율을 매기므로, 경계를 넘었다고 전체 세금이 한꺼번에 뛰지 않습니다. 이 계산기에서는 식대 월 20만원 기준으로 연봉 약 2,682만원부터 15%, 약 6,688만원부터 24%, 약 1억 674만원부터 35% 구간으로 표시가 바뀝니다.",
+    a: `아닙니다. 누진세율은 과세표준 가운데 구간을 넘는 부분에만 높은 세율을 매기므로, 경계를 넘었다고 전체 세금이 한꺼번에 뛰지 않습니다. 이 계산기에서는 식대 월 20만원 기준으로 연봉 약 ${wonFull(r15)}부터 15%, 약 ${wonFull(r24)}부터 24%, 약 ${wonFull(r35)}부터 35% 구간으로 표시가 바뀝니다.`,
   },
   {
     q: "이 금액이 매달 월급에서 실제로 떼는 세금인가요?",
@@ -44,26 +65,35 @@ const FAQ = [
   },
 ];
 
-// 연봉 5,000만원 단계별 계산 (calcTakeHome 중간값과 동일)
+// 연봉 5,000만원 단계별 계산 (calcTakeHome 중간값 그대로)
 const STEPS: { k: string; v: string }[] = [
-  { k: "과세 급여 = 연봉 − 비과세 식대 1년 치(20만원 × 12)", v: "4,760만원" },
-  { k: "4대보험 = 과세 급여 × 9.4%", v: "447만 4,400원" },
-  { k: "근로소득공제 = 1,200만원 + 4,500만원 초과분 × 5%", v: "1,213만원" },
-  { k: "과세표준 = 과세 급여 − 근로소득공제 − 본인 기본공제 150만원", v: "3,397만원" },
-  { k: "산출세액 = 과세표준 × 15% − 누진공제 126만원", v: "383만 5,500원" },
-  { k: "근로소득세액공제 (계산상 147만 5,650원, 한도 66만원)", v: "−66만원" },
-  { k: "소득세", v: "317만 5,500원" },
-  { k: "지방소득세 = 소득세 × 10%", v: "31만 7,550원" },
-  { k: "연 실수령 = 연봉 − 4대보험 − 소득세 − 지방소득세", v: "4,203만 2,550원" },
-  { k: "월 실수령 = 연 실수령 ÷ 12", v: "350만 2,713원" },
+  { k: "과세 급여 = 연봉 − 비과세 식대 1년 치(20만원 × 12)", v: wonFull(ex5.taxable) },
+  { k: `4대보험 = ${INS_TEXT}`, v: wonFull(ex5.insurance) },
+  { k: "근로소득공제 (총급여 구간별 공제율)", v: wonFull(ex5.earnedDeduction) },
+  { k: "과세표준 = 과세 급여 − 근로소득공제 − 본인 기본공제 150만원", v: wonFull(ex5.taxBase) },
+  { k: `산출세액 (과세표준 × ${pct(ex5.topRate, 0)} − 누진공제)`, v: wonFull(ex5.computedTax) },
+  {
+    k: `근로소득세액공제 (계산상 ${wonFull(ex5.creditRaw)}, 한도 ${wonFull(ex5.creditCap)})`,
+    v: wonFull(-Math.min(ex5.creditRaw, ex5.creditCap)),
+  },
+  { k: "소득세", v: wonFull(ex5.incomeTax) },
+  { k: "지방소득세 = 소득세 × 10%", v: wonFull(ex5.localTax) },
+  { k: "연 실수령 = 연봉 − 4대보험 − 소득세 − 지방소득세", v: wonFull(ex5.net) },
+  { k: "월 실수령 = 연 실수령 ÷ 12", v: wonFull(ex5.monthlyNet) },
 ];
 
-// 예시 3개 (월 기준)
-const EXAMPLES = [
-  { salary: "3,000만원", gross: "250만원", ins: "21만 6,200원", tax: "4만 6,744원 + 4,674원", net: "223만 2,382원", rate: "89.3%" },
-  { salary: "5,000만원", gross: "416만 6,667원", ins: "37만 2,867원", tax: "26만 4,625원 + 2만 6,463원", net: "350만 2,713원", rate: "84.1%" },
-  { salary: "1억원", gross: "833만 3,333원", ins: "76만 4,533원", tax: "110만 7,733원 + 11만 773원", net: "635만 293원", rate: "76.2%" },
-];
+// 연봉별 비교 (월 기준)
+const EXAMPLES = [30_000_000, 50_000_000, 100_000_000].map((g) => {
+  const t = calcTakeHome(g);
+  return {
+    salary: wonFull(g),
+    gross: wonFull(t.monthlyGross),
+    ins: wonFull(Math.round(t.insurance / 12)),
+    tax: `${wonFull(Math.round(t.incomeTax / 12))} + ${wonFull(Math.round(t.localTax / 12))}`,
+    net: wonFull(t.monthlyNet),
+    rate: pct(t.net / g),
+  };
+});
 
 export default function TakeHomePage() {
   const card =
@@ -113,7 +143,7 @@ export default function TakeHomePage() {
         </div>
       </section>
 
-      {/* 예시 3개 */}
+      {/* 연봉별 비교 */}
       <section className={card}>
         <h2 className={h2}>연봉별로 비교하면</h2>
         <div className="mt-3 overflow-x-auto rounded-lg ring-1 ring-slate-100">
@@ -143,10 +173,12 @@ export default function TakeHomePage() {
           </table>
         </div>
         <p className="mt-3">
-          연봉이 3,000만원에서 1억원으로 3배 넘게 오르는 동안 실수령률은 89.3%에서
-          76.2%로 내려갑니다. 1억원은 과세표준이 24% 구간에 들어가고, 근로소득세액공제
-          한도도 66만원에서 50만원으로 줄기 때문입니다. 4대보험은 과세 급여에 같은
-          비율(9.4%)로 붙으므로, 실수령률 차이는 대부분 소득세에서 생깁니다.
+          연봉이 3,000만원에서 1억원으로 3배 넘게 오르는 동안 실수령률은{" "}
+          {EXAMPLES[0].rate}에서 {EXAMPLES[2].rate}로 내려갑니다. 연봉이 오를수록
+          과세표준이 높은 세율 구간에 들어가고 근로소득세액공제 한도도 줄기 때문입니다.
+          4대보험은 대부분 같은 비율(합계 약 {pct(INS_SUM, 1)})로 붙고 국민연금만 월
+          소득 {wonFull(R.pensionMonthlyCap)}까지만 매기므로, 실수령률 차이는 대부분
+          소득세에서 생깁니다.
         </p>
       </section>
 
@@ -160,9 +192,9 @@ export default function TakeHomePage() {
             대개 이보다 적습니다.
           </li>
           <li>
-            4대보험은 항목별로 따로 계산하지 않고 합계 약 9.4%를 한 번에 곱했으며,
-            국민연금 소득 상한 같은 상·하한을 생략했습니다. 연봉이 높을수록 실제
-            공제액이 계산보다 적을 수 있고, 보험 요율은 해마다 바뀝니다.
+            4대보험은 2026년 요율({INS_TEXT})로 항목별로 계산하고, 국민연금은 기준소득월액
+            상한 {wonFull(R.pensionMonthlyCap)}을 적용했습니다. 건강보험 상한·하한처럼
+            일반적인 연봉에서 영향이 거의 없는 세부는 생략했고, 보험 요율은 해마다 바뀝니다.
           </li>
           <li>
             소득세 산식과 공제 한도는 세법이 바뀌면 달라집니다. 결과는 2026년 기준

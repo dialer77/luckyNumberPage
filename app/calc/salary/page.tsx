@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SalaryCalculator from "../SalaryCalculator";
 import Faq from "../../components/Faq";
+import { calcTakeHome, wonFull, INSURANCE_2026 } from "@/lib/salary";
 
 export const metadata: Metadata = {
   title: "이직 연봉 계산기 — 월 실수령·누적 소득 차이",
@@ -11,13 +12,49 @@ export const metadata: Metadata = {
   alternates: { canonical: "/calc/salary" },
 };
 
-// 아래 예시·FAQ의 금액은 lib/salary.ts의 calcTakeHome과 app/calc/SalaryCalculator.tsx의
-// 누적 계산(첫해 그대로, 이후 매년 인상률 복리, 세전 합계)으로 낸 값입니다.
-// 계산식이 바뀌면 이 숫자들도 다시 계산해 고치세요.
+// 아래 예시·FAQ의 숫자는 lib/salary.ts 의 calcTakeHome 과 SalaryCalculator.tsx 와 같은
+// 누적 계산(첫해 그대로, 이후 매년 인상률 복리, 세전 합계)으로 그 자리에서 계산한다.
+// 요율·세법이 바뀌면 lib/salary.ts 만 고치면 된다.
+const R = INSURANCE_2026;
+const INS_SUM = R.pension + R.health * (1 + R.longTermCareOfHealth) + R.employment;
+const pct = (x: number, d = 1) => `${(x * 100).toFixed(d)}%`;
+
+// SalaryCalculator.tsx 와 같은 방식의 세전 누적
+function grossSum(salary: number, raise: number, years: number) {
+  let s = 0;
+  for (let t = 0; t < years; t++) s += salary * Math.pow(1 + raise, t);
+  return Math.round(s);
+}
+// 같은 흐름을 해마다 세후로 바꿔 더한 값
+function netSum(salary: number, raise: number, years: number) {
+  let s = 0;
+  for (let t = 0; t < years; t++) s += calcTakeHome(salary * Math.pow(1 + raise, t)).net;
+  return Math.round(s);
+}
+
+const CASES = [
+  { from: 40_000_000, to: 50_000_000, raise: 0.04, years: 10 },
+  { from: 30_000_000, to: 35_000_000, raise: 0.03, years: 5 },
+  { from: 80_000_000, to: 100_000_000, raise: 0.03, years: 10 },
+].map((c) => {
+  const a = calcTakeHome(c.from);
+  const b = calcTakeHome(c.to);
+  return {
+    ...c,
+    payFrom: a.monthlyNet,
+    payTo: b.monthlyNet,
+    monthlyGrossUp: b.monthlyGross - a.monthlyGross,
+    keep: (b.net - a.net) / (c.to - c.from),
+    sumGross: grossSum(c.to, c.raise, c.years) - grossSum(c.from, c.raise, c.years),
+    sumNet: netSum(c.to, c.raise, c.years) - netSum(c.from, c.raise, c.years),
+  };
+});
+const c1 = CASES[0];
+
 const FAQ = [
   {
     q: "연봉을 올려도 실수령은 왜 덜 오르나요?",
-    a: "연봉이 오르면 소득세 구간이 높아지고 4대보험도 함께 늘어, 세전 인상액만큼 실수령이 늘지는 않습니다. 예를 들어 4,000만원에서 5,000만원으로 오르면 월 세전은 약 83만원 늘지만 월 실수령은 약 63만원 늘어납니다. 이 계산기의 월 실수령 비교는 세후 기준입니다.",
+    a: `연봉이 오르면 소득세 구간이 높아지고 4대보험도 함께 늘어, 세전 인상액만큼 실수령이 늘지는 않습니다. 예를 들어 4,000만원에서 5,000만원으로 오르면 월 세전은 약 ${wonFull(Math.round(c1.monthlyGrossUp / 10_000) * 10_000)} 늘지만 월 실수령은 약 ${wonFull(Math.round((c1.payTo - c1.payFrom) / 10_000) * 10_000)} 늘어납니다. 이 계산기의 월 실수령 비교는 세후 기준입니다.`,
   },
   {
     q: "이직으로 벌어지는 소득 차이가 왜 커지나요?",
@@ -29,7 +66,7 @@ const FAQ = [
   },
   {
     q: "누적 소득 차이는 세전인가요, 세후인가요?",
-    a: "세전 연봉을 더한 값입니다. 세금과 4대보험을 떼면 실제로 손에 남는 차이는 더 작습니다. 4,000만원 → 5,000만원(인상률 4%, 10년) 예시에서 세전 누적 차이는 1억 2,006만원이지만, 해마다 세후 금액을 구해 더하면 약 8,964만원입니다. 연봉이 높을수록 세후로 남는 비율이 낮아집니다.",
+    a: `세전 연봉을 더한 값입니다. 세금과 4대보험을 떼면 실제로 손에 남는 차이는 더 작습니다. 4,000만원 → 5,000만원(인상률 4%, 10년) 예시에서 세전 누적 차이는 ${wonFull(Math.round(c1.sumGross / 10_000) * 10_000)}이지만, 해마다 세후 금액을 구해 더하면 약 ${wonFull(Math.round(c1.sumNet / 10_000) * 10_000)}입니다. 연봉이 높을수록 세후로 남는 비율이 낮아집니다.`,
   },
   {
     q: "인상률은 몇 %로 넣어야 하나요?",
@@ -42,29 +79,13 @@ const FAQ = [
 ];
 
 // 예시 3개 (월 실수령은 비과세 식대 월 20만원 기준)
-const EXAMPLES = [
-  {
-    move: "4,000만원 → 5,000만원",
-    cond: "4% · 10년",
-    pay: "287만 2,123원 → 350만 2,713원",
-    diff: "+63만 590원",
-    sum: "1억 2,006만 1,071원",
-  },
-  {
-    move: "3,000만원 → 3,500만원",
-    cond: "3% · 5년",
-    pay: "223만 2,382원 → 255만 6,433원",
-    diff: "+32만 4,051원",
-    sum: "2,654만 5,679원",
-  },
-  {
-    move: "8,000만원 → 1억원",
-    cond: "3% · 10년",
-    pay: "525만 8,293원 → 635만 293원",
-    diff: "+109만 2,000원",
-    sum: "2억 2,927만 7,586원",
-  },
-];
+const EXAMPLES = CASES.map((c) => ({
+  move: `${wonFull(c.from)} → ${wonFull(c.to)}`,
+  cond: `${Math.round(c.raise * 100)}% · ${c.years}년`,
+  pay: `${wonFull(c.payFrom)} → ${wonFull(c.payTo)}`,
+  diff: `+${wonFull(c.payTo - c.payFrom)}`,
+  sum: wonFull(c.sumGross),
+}));
 
 export default function SalaryCalcPage() {
   const card =
@@ -97,7 +118,8 @@ export default function SalaryCalcPage() {
         <p className="mt-2">
           <b>① 월 실수령 비교</b> — 두 연봉 각각에 연봉 실수령액 계산기와 같은 식을
           씁니다. 월 비과세 식대 20만원을 뺀 과세 급여에 4대보험 근로자
-          부담분(약 9.4%)을 매기고, 근로소득공제 → 본인 기본공제 150만원 →
+          부담분(2026년 요율 합계 약 {pct(INS_SUM)}, 국민연금은 월 소득{" "}
+          {wonFull(R.pensionMonthlyCap)} 상한)을 매기고, 근로소득공제 → 본인 기본공제 150만원 →
           누진세율(6~45%) → 근로소득세액공제 순서로 소득세를 구한 뒤
           지방소득세(소득세의 10%)를 더합니다. 연봉에서 이 세 가지를 뺀 연
           실수령액을 12로 나눈 값이 월 실수령입니다.
@@ -139,15 +161,18 @@ export default function SalaryCalcPage() {
           </table>
         </div>
         <p className="mt-3">
-          세 경우 모두 월 세전 급여는 각각 83만 3,334원, 41만 6,667원, 166만
-          6,666원 늘지만, 실수령으로 남는 건 75.7%, 77.8%, 65.5%입니다. 8,000만원
-          → 1억원은 늘어난 금액이 전부 소득세 24% 구간에 걸리기 때문에 남는 비율이
-          가장 낮습니다.
+          세 경우 월 세전 급여는 각각 {wonFull(CASES[0].monthlyGrossUp)},{" "}
+          {wonFull(CASES[1].monthlyGrossUp)}, {wonFull(CASES[2].monthlyGrossUp)} 늘지만,
+          실수령으로 남는 건 {pct(CASES[0].keep)}, {pct(CASES[1].keep)},{" "}
+          {pct(CASES[2].keep)}입니다. 8,000만원 → 1억원은 늘어난 금액이 높은 소득세
+          구간에 걸리기 때문에 남는 비율이 가장 낮습니다.
         </p>
         <p className="mt-2">
           누적 차이도 세후로 보면 줄어듭니다. 첫 번째 예시에서 해마다 오른 연봉의
-          세후 금액을 같은 식으로 구해 더하면 10년 누적 차이는 약 8,964만원으로,
-          세전 차이 1억 2,006만원의 약 75%입니다.
+          세후 금액을 같은 식으로 구해 더하면 10년 누적 차이는 약{" "}
+          {wonFull(Math.round(c1.sumNet / 10_000) * 10_000)}으로, 세전 차이{" "}
+          {wonFull(Math.round(c1.sumGross / 10_000) * 10_000)}의 약{" "}
+          {pct(c1.sumNet / c1.sumGross, 0)}입니다.
         </p>
       </section>
 
