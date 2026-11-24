@@ -55,6 +55,18 @@ const CALCULATORS = [
     desc: "2천만~1억 5천만원, 100만원 단위 월급 한눈에",
   },
   {
+    href: "/calc/salary-rank",
+    emoji: "🏆",
+    title: "내 연봉 상위 몇 %",
+    desc: "국세청 2024년 자료로 본 전국 직장인 순위",
+  },
+  {
+    href: "/calc/salary-by-age",
+    emoji: "👥",
+    title: "내 월급, 내 나이대에서 상위 몇 %",
+    desc: "20대~60대 나이대별 중위·평균 월급과 내 위치",
+  },
+  {
     href: "/calc/salary",
     emoji: "💼",
     title: "이직 연봉 계산기",
@@ -89,12 +101,6 @@ const CALCULATORS = [
     emoji: "🧳",
     title: "퇴직금 계산기",
     desc: "근속·급여로 예상 퇴직금",
-  },
-  {
-    href: "/calc/salary-rank",
-    emoji: "🏆",
-    title: "내 연봉 상위 몇 %",
-    desc: "대한민국 근로소득 순위 (재미)",
   },
 ];
 

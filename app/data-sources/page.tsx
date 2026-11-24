@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 // 코드 기준으로 작성한 문서입니다. 아래 파일의 기준이 바뀌면 이 페이지도 함께 고치세요.
 //   로또: app/api/cron/lotto/route.ts, lib/lotto-live.ts, lib/lotto-data.ts(calcTax)
 //   투자: lib/real-prices.ts, lib/coin-prices.ts, lib/stock-prices.ts, lib/invest-data.ts, lib/dividend-data.ts
-//   계산기: lib/salary.ts, lib/inflation.ts, lib/loan.ts, lib/salary-rank.ts, app/calc/*Calculator.tsx
+//   계산기: lib/salary.ts, lib/inflation.ts, lib/loan.ts, lib/salary-rank.ts, lib/wage-by-age.ts, app/calc/*Calculator.tsx
 const SUMMARY: { feature: string; source: string; kind: string }[] = [
   {
     feature: "로또 당첨번호·당첨금",
@@ -301,9 +301,17 @@ export default function DataSourcesPage() {
             금액이며 퇴직소득세와 상여·수당의 세부 산정은 반영하지 않습니다.
           </li>
           <li>
-            <strong>연봉 상위 %</strong>: 국세청 근로소득 분포를 참고해 정한 16개
-            연봉 구간의 대략적인 상위 비율 사이를 직선으로 이어 계산하는 재미용
-            지표입니다. 실제 통계와 차이가 날 수 있습니다.
+            <strong>연봉 상위 %</strong>: 국세청 「근로소득 백분위(천분위) 자료」(2024년
+            귀속, 공공데이터포털)를 씁니다. 연말정산 신고 근로자 약 2,108만 명을 총급여
+            순으로 나눈 109개 구간(상위 1%까지 0.1%, 그 아래 1% 단위)의 1인 평균
+            총급여를 구간 가운데 점에 두고 직선으로 이어 내 연봉의 위치를 추정합니다.
+          </li>
+          <li>
+            <strong>나이대별 월급 순위</strong>: 국가데이터처 「2024년 임금근로일자리
+            소득(보수) 결과」의 연령별·성·연령별 소득 표를 씁니다. 나이대마다 공개된 10개
+            월 소득 구간 비중을 누적해 직선으로 잇고, 공식 중위값을 그대로 맞춥니다. 세전
+            월 보수, 일자리 단위 자료이며 월 1,000만원 이상은 &quot;상위 몇 % 이내&quot;로만
+            표시합니다.
           </li>
         </ul>
       </section>
