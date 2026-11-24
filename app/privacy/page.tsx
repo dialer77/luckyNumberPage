@@ -9,7 +9,8 @@ export const metadata: Metadata = {
 
 // 실제 사용 중인 도구 기준으로 작성:
 // Google AdSense(광고 쿠키), Vercel Analytics/Speed Insights(익명 통계),
-// localStorage(내 번호 저장), Upstash Redis(랭킹 닉네임), lastPlayed 쿠키(랭킹 1일 1회).
+// localStorage(내 번호 저장), Upstash Redis(로또·시세 데이터 캐시 — 이용자 정보는 저장하지 않음).
+// (2026-11-24 오늘의 랭킹 삭제로 닉네임 저장·lastPlayed 쿠키 없음)
 // 도구를 추가·변경하면 이 문서와 시행일을 함께 갱신하세요.
 export default function PrivacyPage() {
   const h2 = "text-lg font-semibold text-slate-800";
@@ -38,12 +39,6 @@ export default function PrivacyPage() {
             않습니다. 브라우저 데이터를 지우면 함께 삭제됩니다.
           </li>
           <li>
-            <strong>오늘의 랭킹</strong>: 참가 시 입력한 닉네임과 시뮬레이션
-            점수가 랭킹 표시를 위해 서버(Upstash)에 저장됩니다. 일일 랭킹은
-            3일 후 자동 삭제되며, 명예의 전당에는 상위 100건만 유지됩니다.
-            실명 등 개인을 알아볼 수 있는 닉네임은 입력하지 마세요.
-          </li>
-          <li>
             <strong>접속 기록</strong>: 서비스 운영 과정에서 서버가 IP 주소,
             브라우저 종류, 접속 시각 등을 자동으로 처리할 수 있으며, 보안과
             장애 대응 목적으로만 사용됩니다.
@@ -55,9 +50,8 @@ export default function PrivacyPage() {
         <h2 className={h2}>2. 쿠키 사용</h2>
         <p>
           쿠키는 웹사이트가 이용자 브라우저에 저장하는 작은 텍스트 파일입니다.
-          사이트는 오늘의 랭킹 하루 1회 참가 여부를 확인하는 쿠키
-          (lastPlayed, 7일 보관)를 사용하며, 아래 광고 서비스가 쿠키를
-          사용할 수 있습니다. 이용자는 브라우저 설정에서 쿠키 저장을 거부하거나
+          사이트 자체는 기능을 위해 쿠키를 쓰지 않으며, 아래 광고 서비스가
+          쿠키를 사용할 수 있습니다. 이용자는 브라우저 설정에서 쿠키 저장을 거부하거나
           삭제할 수 있으나, 일부 기능이 제한될 수 있습니다.
         </p>
       </section>
@@ -136,8 +130,7 @@ export default function PrivacyPage() {
       <section className="space-y-1">
         <h2 className={h2}>7. 이용자의 권리와 문의</h2>
         <p>
-          이용자는 랭킹에 등록된 닉네임의 삭제 등 자신과 관련된 정보의 열람·
-          정정·삭제를 요청할 수 있습니다. 개인정보 관련 문의는{" "}
+          이용자는 자신과 관련된 정보의 열람·정정·삭제를 요청할 수 있습니다. 개인정보 관련 문의는{" "}
           <a href="/contact" className={link}>
             문의 페이지
           </a>
@@ -153,7 +146,7 @@ export default function PrivacyPage() {
         </p>
       </section>
 
-      <p className="text-sm text-slate-400">시행일: 2026-10-19 (최초 시행 2026-07-03)</p>
+      <p className="text-sm text-slate-400">시행일: 2026-11-24 (최초 시행 2026-07-03)</p>
     </article>
   );
 }

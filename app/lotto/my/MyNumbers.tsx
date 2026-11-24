@@ -2,12 +2,48 @@
 // 내 로또번호 저장 + 최신 회차 자동 당첨확인.
 // 회원가입 없이 브라우저 localStorage에 저장 → 진입장벽 0, 재방문 유도.
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import NumberBall from "../../components/NumberBall";
-import { ballColor, type LottoDraw } from "@/lib/lotto-data";
-import { rankName } from "@/lib/challenge";
+import { ballColor, rankName, type LottoDraw } from "@/lib/lotto-data";
 
 const STORAGE_KEY = "myLottoNumbers";
+
+// localStorage를 외부 저장소로 구독한다(useSyncExternalStore).
+// 서버 렌더링 때는 빈 목록, 브라우저에선 저장된 목록 — 다른 탭에서 바꿔도 반영된다.
+const listeners = new Set<() => void>();
+const EMPTY: number[][] = [];
+let cachedRaw: string | null = null;
+let cachedValue: number[][] = EMPTY;
+
+function subscribe(onChange: () => void) {
+  listeners.add(onChange);
+  window.addEventListener("storage", onChange);
+  return () => {
+    listeners.delete(onChange);
+    window.removeEventListener("storage", onChange);
+  };
+}
+function readSaved(): number[][] {
+  let raw: string | null = null;
+  try {
+    raw = localStorage.getItem(STORAGE_KEY);
+  } catch {}
+  if (raw !== cachedRaw) {
+    cachedRaw = raw;
+    try {
+      cachedValue = raw ? (JSON.parse(raw) as number[][]) : EMPTY;
+    } catch {
+      cachedValue = EMPTY;
+    }
+  }
+  return cachedValue;
+}
+function writeSaved(next: number[][]) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  } catch {}
+  listeners.forEach((l) => l());
+}
 const ALL = Array.from({ length: 45 }, (_, i) => i + 1);
 
 // 저장한 6개 번호를 최신 회차와 대조해 등수 계산
@@ -24,23 +60,8 @@ function judge(set: number[], draw: LottoDraw): { match: number; rank: number } 
 }
 
 export default function MyNumbers({ latest }: { latest: LottoDraw }) {
-  const [saved, setSaved] = useState<number[][]>([]);
+  const saved = useSyncExternalStore(subscribe, readSaved, () => EMPTY);
   const [picking, setPicking] = useState<number[]>([]);
-  const [loaded, setLoaded] = useState(false);
-
-  // 최초 로드: localStorage에서 불러오기
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setSaved(JSON.parse(raw));
-    } catch {}
-    setLoaded(true);
-  }, []);
-
-  // 변경 시 저장 (최초 로드 완료 후에만)
-  useEffect(() => {
-    if (loaded) localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
-  }, [saved, loaded]);
 
   function toggle(n: number) {
     setPicking((prev) =>
@@ -54,12 +75,12 @@ export default function MyNumbers({ latest }: { latest: LottoDraw }) {
 
   function save() {
     if (picking.length !== 6) return;
-    setSaved((prev) => [picking, ...prev]);
+    writeSaved([picking, ...saved]);
     setPicking([]);
   }
 
   function remove(idx: number) {
-    setSaved((prev) => prev.filter((_, i) => i !== idx));
+    writeSaved(saved.filter((_, i) => i !== idx));
   }
 
   function fillRandom() {

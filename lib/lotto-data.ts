@@ -241,3 +241,8 @@ export function whatCanYouBuy(
     return { emoji, label, text };
   });
 }
+
+/** 맞힌 등수 표시 (1~5등, 그 외 꽝) — 내 번호 당첨확인에서 사용 */
+export function rankName(rank: number): string {
+  return rank >= 1 && rank <= 5 ? `${rank}등` : "꽝";
+}

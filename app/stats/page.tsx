@@ -123,11 +123,8 @@ export default async function StatsPage() {
         </p>
         <p className="mt-2">
           이 통계는 지난 결과를 기록한 참고 자료일 뿐, 복권 구매를 권하지
-          않습니다. 번호는 좋아하는 숫자나{" "}
-          <Link href="/tools/generator" className="text-indigo-600 hover:underline">
-            무작위 생성기
-          </Link>
-          로 고르고, 복권은 여윳돈으로 소액만 즐기세요. 도박 문제로 어려움이
+          않습니다. 어떤 번호를 골라도 확률은 같으니 번호는 마음에 드는 숫자로 고르고,
+          복권은 여윳돈으로 소액만 즐기세요. 도박 문제로 어려움이
           있다면 한국도박문제예방치유원(국번 없이 1336)에서 상담받을 수 있습니다.
         </p>
         <p className="mt-2 text-slate-400">

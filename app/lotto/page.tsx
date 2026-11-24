@@ -43,7 +43,7 @@ export default async function LottoHomePage() {
       <div>
         <h1 className="text-2xl font-bold">🍀 행운노트</h1>
         <p className="mt-1 text-sm text-slate-500">
-          로또·복권 당첨번호부터 1등 도전·랭킹까지, 원하는 기능을 골라보세요.
+          로또 당첨번호와 당첨금, 회차별 데이터와 통계를 한곳에서 확인하세요.
         </p>
       </div>
 

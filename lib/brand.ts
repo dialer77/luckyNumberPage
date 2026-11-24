@@ -28,7 +28,7 @@ export const SUB_BRANDS: SubBrand[] = [
     key: "lotto",
     emoji: "🍀",
     name: "행운노트",
-    tagline: "로또·복권 당첨번호 조회부터 1등 도전·랭킹까지",
+    tagline: "로또 당첨번호·당첨금과 회차별 데이터",
     status: "live",
     href: "/lotto",
   },
@@ -56,7 +56,4 @@ export const LOTTO_FEATURES = [
   { href: "/lotto/list", emoji: "📜", title: "회차별 당첨번호", desc: "역대 회차를 한눈에 조회" },
   { href: "/stats", emoji: "📊", title: "번호 출현 통계", desc: "어떤 번호가 자주 나왔나" },
   { href: "/lotto/trends", emoji: "📈", title: "회차별 추이 대시보드", desc: "당첨금·당첨자·합계 그래프" },
-  { href: "/tools/generator", emoji: "🎲", title: "번호 생성기", desc: "무작위 행운 번호 뽑기" },
-  { href: "/tools/challenge", emoji: "🎯", title: "1등 도전 시뮬레이터", desc: "몇 번 만에 1등이 나올까?" },
-  { href: "/ranking", emoji: "🏆", title: "오늘의 랭킹", desc: "매일 순이익으로 겨루기" },
 ];

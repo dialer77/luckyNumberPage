@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
       { source: "/guide/isa-account", destination: "/guide/dividend-etf", permanent: true },
       { source: "/guide/jeonse-vs-monthly", destination: "/calc/loan", permanent: true },
       { source: "/guide/emergency-fund", destination: "/calc/savings", permanent: true },
+      // 2026-11: 로또 '놀이' 도구(번호 생성기·1등 도전·오늘의 랭킹)와 결과 공유 페이지 삭제
+      { source: "/tools/generator", destination: "/lotto", permanent: true },
+      { source: "/tools/challenge", destination: "/guide/lotto-probability", permanent: true },
+      { source: "/ranking", destination: "/lotto", permanent: true },
+      { source: "/challenge-result/:code", destination: "/lotto", permanent: true },
     ];
   },
 };

@@ -12,7 +12,6 @@ export const metadata: Metadata = {
 //   로또: app/api/cron/lotto/route.ts, lib/lotto-live.ts, lib/lotto-data.ts(calcTax)
 //   투자: lib/real-prices.ts, lib/coin-prices.ts, lib/stock-prices.ts, lib/invest-data.ts, lib/dividend-data.ts
 //   계산기: lib/salary.ts, lib/inflation.ts, lib/loan.ts, lib/salary-rank.ts, app/calc/*Calculator.tsx
-//   모의 실험: lib/leaderboard.ts, lib/challenge.ts, app/tools/*
 const SUMMARY: { feature: string; source: string; kind: string }[] = [
   {
     feature: "로또 당첨번호·당첨금",
@@ -48,11 +47,6 @@ const SUMMARY: { feature: string; source: string; kind: string }[] = [
     feature: "머니계산기",
     source: "세법·4대보험 요율·물가지수의 근사값",
     kind: "근사 계산",
-  },
-  {
-    feature: "오늘의 랭킹·1등 도전·번호 생성기",
-    source: "무작위 추첨",
-    kind: "가상 모의 실험",
   },
 ];
 
@@ -271,11 +265,13 @@ export default function DataSourcesPage() {
           <li>
             <strong>연봉 실수령액·이직 연봉</strong>: 2026년 기준 근사입니다.
             부양가족이 없는 본인 1인을 가정하고, 월 비과세액(식대 기본 20만원)을
-            뺀 과세 급여에 4대보험 근로자 부담분을 합계 약 9.4%의 단일 요율로
-            적용합니다. 소득세는 근로소득공제 → 본인 기본공제 150만원 →
-            종합소득세 누진세율(6~45%) → 근로소득세액공제 순서로 구하고,
-            지방소득세는 소득세의 10%입니다. 그 밖의 공제와 보험료 상·하한은
-            생략해 실제보다 세금이 조금 많게 나올 수 있습니다. 이직 연봉
+            뺀 과세 급여에 4대보험 근로자 부담분을 2026년 요율로 항목별로
+            매깁니다(국민연금 4.75%·월 소득 상한 659만원, 건강보험 3.595%,
+            장기요양 = 건강보험료 × 13.14%, 고용보험 0.9%, 합계 약 9.7%).
+            소득세는 근로소득공제 → 본인 기본공제 150만원 → 종합소득세
+            누진세율(6~45%) → 근로소득세액공제 순서로 구하고, 지방소득세는
+            소득세의 10%입니다. 보험료·연금보험료 소득공제 같은 그 밖의 공제와
+            건강보험 상·하한은 생략해 실제보다 세금이 조금 많게 나올 수 있습니다. 이직 연봉
             계산기도 같은 식으로 두 연봉의 실수령액을 비교합니다.
           </li>
           <li>
@@ -313,44 +309,7 @@ export default function DataSourcesPage() {
       </section>
 
       <section className="space-y-2">
-        <h2 className={h2}>6. 랭킹·1등 도전·번호 생성기는 가상 모의 실험입니다</h2>
-        <p>
-          행운노트의 놀이 기능은 실제 복권 구매와 관계없는 가상 시뮬레이션입니다.
-          실제 돈을 걸거나 상품을 주지 않습니다.
-        </p>
-        <ul className="list-disc space-y-1 pl-5">
-          <li>
-            <strong>번호 생성기</strong>: 1~45 중 서로 다른 6개를 무작위로 뽑아
-            보여줄 뿐, 당첨 가능성이 높은 번호를 추천하거나 예측하지 않습니다.
-            어떤 조합이든 1등 확률은 똑같이 8,145,060분의 1입니다.
-          </li>
-          <li>
-            <strong>1등 도전 시뮬레이터</strong>: 최신 회차 당첨번호를 정답으로
-            두고 이용자 브라우저에서 무작위 번호를 뽑아 맞춰 봅니다. 당첨금은 그
-            회차의 등수별 1게임당 당첨금(세전), 구매액은 1게임 1,000원으로
-            셈하고, 걸리는 기간은 매주 5게임(5,000원)을 산다고 가정해
-            환산합니다.
-          </li>
-          <li>
-            <strong>오늘의 랭킹</strong>: 점수 조작을 막기 위해 서버가 직접
-            1,000게임을 무작위로 돌려 결과를 확정합니다. 점수는 모의 당첨금에서
-            구매액(100만원)을 뺀 순이익이며, 하루 한 번 참가할 수 있고 매일
-            0시(한국 시간)에 새로 시작합니다.
-          </li>
-        </ul>
-        <p>
-          로또는 판매액의 약 50%만 당첨금으로 돌려주는 구조라, 이런 모의 실험을
-          여러 번 해 보면 대부분 손실로 끝납니다. 랭킹 상위권은 운이 좋았던 드문
-          결과일 뿐입니다. 확률에 대한 자세한 설명은{" "}
-          <Link href="/guide/lotto-probability" className={link}>
-            로또 1등 확률과 번호 고르기의 진실
-          </Link>
-          에 있습니다.
-        </p>
-      </section>
-
-      <section className="space-y-2">
-        <h2 className={h2}>7. 한계와 오류 신고</h2>
+        <h2 className={h2}>6. 한계와 오류 신고</h2>
         <ul className="list-disc space-y-1 pl-5">
           <li>
             이 사이트의 모든 계산 결과는 참고용입니다. 세법·4대보험 요율·금리 같은
@@ -378,16 +337,20 @@ export default function DataSourcesPage() {
       </section>
 
       <section className="space-y-2">
-        <h2 className={h2}>8. 로또·복권 이용 안내</h2>
+        <h2 className={h2}>7. 로또·복권 이용 안내</h2>
         <p>
           {SITE.name}는 복권 판매처가 아니며, 복권 구매를 권하거나 알선하지 않고
-          당첨을 보장하지 않습니다. 복권은 만 19세 이상만 구매할 수 있으니
+          당첨을 보장하지 않습니다. 로또는 판매액의 약 50%만 당첨금으로 돌려주는 구조라 평균적으로는 산 금액의 절반 정도만 돌아옵니다(자세한 계산은{" "}
+          <Link href="/guide/lotto-probability" className={link}>
+            로또 1등 확률과 번호 고르기의 진실
+          </Link>
+          ). 복권은 만 19세 이상만 구매할 수 있으니
           여윳돈으로 소액만 즐기세요. 도박 문제로 어려움을 겪고 있다면
           한국도박문제예방치유원(국번 없이 1336)에서 상담받을 수 있습니다.
         </p>
       </section>
 
-      <p className="text-sm text-slate-400">최종 업데이트: 2026-11-12</p>
+      <p className="text-sm text-slate-400">최종 업데이트: 2026-11-24</p>
     </article>
   );
 }

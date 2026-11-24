@@ -15,7 +15,7 @@ export default function ContactPage() {
       <p>
         {SITE.name}는 1인 개발자가 운영하는 정보 서비스입니다. 서비스 이용
         방법, 당첨번호·계산 결과의 오류 제보, 기능 제안, 제휴, 개인정보 관련
-        요청(랭킹 닉네임 삭제 등)은 아래 이메일로 보내 주세요. 영업일 기준
+        요청은 아래 이메일로 보내 주세요. 영업일 기준
         2~3일 안에 답변드립니다.
       </p>
       <p className="rounded-lg bg-white p-4 shadow-sm ring-1 ring-slate-100">

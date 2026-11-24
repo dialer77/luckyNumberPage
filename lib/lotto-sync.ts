@@ -216,7 +216,6 @@ export function revalidateLottoPages(added: number[]) {
     "/lotto/my",
     "/lotto/trends",
     "/stats",
-    "/tools/challenge",
     "/sitemap.xml",
     "/rss.xml",
   ]) {

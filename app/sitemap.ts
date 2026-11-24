@@ -38,11 +38,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/lotto/list": latestDrawDate,
     "/lotto/trends": latestDrawDate,
     "/stats": latestDrawDate,
-    "/about": new Date("2026-11-12"),
-    "/data-sources": new Date("2026-11-12"),
+    "/about": new Date("2026-11-24"),
+    "/data-sources": new Date("2026-11-24"),
     "/contact": new Date("2026-10-19"),
-    "/privacy": new Date("2026-10-19"),
-    "/terms": new Date("2026-10-19"),
+    "/privacy": new Date("2026-11-24"),
+    "/terms": new Date("2026-11-24"),
   };
 
   const staticPages = [
@@ -52,7 +52,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/lotto/list",
     "/lotto/trends",
     "/stats",
-    // /ranking·/tools/generator·/tools/challenge 는 놀이용이라 noindex → sitemap에서도 제외
     "/invest",
     "/invest/dividend",
     "/calc",
