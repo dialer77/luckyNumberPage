@@ -3,6 +3,7 @@
 // 회원가입 없이 브라우저 localStorage에 저장 → 진입장벽 0, 재방문 유도.
 
 import { useState, useSyncExternalStore } from "react";
+import Link from "next/link";
 import NumberBall from "../../components/NumberBall";
 import { ballColor, rankName, type LottoDraw } from "@/lib/lotto-data";
 
@@ -172,6 +173,12 @@ export default function MyNumbers({ latest }: { latest: LottoDraw }) {
                   >
                     {match}개 일치 · {rankName(rank)}
                   </span>
+                  <Link
+                    href={`/lotto/what-if?n=${set.join(",")}`}
+                    className="text-xs text-indigo-600 hover:underline"
+                  >
+                    1회부터 샀다면?
+                  </Link>
                   <button
                     onClick={() => remove(i)}
                     className="text-xs text-slate-400 hover:text-rose-500"
